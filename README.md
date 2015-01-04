@@ -1,4 +1,4 @@
 Thesis-short
 ============
 
-Shortened version of Thesis
+Shortened version of Thesis, for Anthem
