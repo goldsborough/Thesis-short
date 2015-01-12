@@ -247,29 +247,6 @@ The process of generating triangle waves additively differs from previous wavefo
 
 \pagebreak
 
-\section{The Gibbs Phenomenon and the Lanczos Sigma Factor}
-
-Examining Figure \ref{fig:gibbsb}, which displays an additively synthesized square wave function with 64 partials, one may observe that additive synthesis, the summation of sine waves to produce complex waveforms, produces an overshoot --- slight ripples or "horns" --- at the ends of each peak and trough of a waveform. This is known as the Gibbs Phenomenon, named after the American scientist Josiah Willard Gibbs who first described it in 1898, and is "the result of summing a finite series of partials rather than the infinite series of partials specified by the Fourier transform" \citebs{67}. Acoustically, this artifact has little influence on the sound of the produced waveform. However, for modulation, this imperfection may render the resulting sound unsatisfactory. A common way to reduce the Gibbs Phenomenon is to apply the Lanczos Sigma ($\sigma$) Factor to each partial of a Fourier Series. This is often called \emph{sigma-approximation}. The definition of the Lanczos Sigma Factor is given in Equation \ref{eq:lanczos}, where $n$ is the current partial number and $M$ the total number of partials in a Fourier Summation. In the \texttt{additive} function shown in Listing \ref{code:add}, the Lanczos Sigma Factor is implemented in lines 48 to 54. Figure \ref{fig:gibbsa} shows the same square wave from Figure \ref{fig:gibbsb} after sigma-approximation.
-
-\begin{equation}
-  \sigma = sinc(\frac{n\pi}{M}) = \frac{\sin(\frac{n\pi}{M})}{\frac{n\pi}{M}}
-  \label{eq:lanczos}
-\end{equation}
-
-\begin{figure}[hb!]
-  \includegraphics[scale=0.5]{img/gibbsb}
-  \caption{An additively synthesized square wave with 64 partials before sigma-approximation.}
-  \label{fig:gibbsb}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[scale=0.5]{img/gibbsa}
-  \caption{An additively synthesized square wave with 64 partials after sigma-approximation.}
-  \label{fig:gibbsa}
-\end{figure}
-
-\pagebreak
-
 \section{Wavetables}
 
 Following the discussion of the creation of complex waveform, the two options for playing back waveforms in a digital synthesis system must be examined: continuous real-time calculation of waveform samples or lookup from a table that has been calculated once and then written to disk --- a so-called Wavetable. To keep matters short, the second method was found to be computationally more efficient and thus the better choice, as memory is a more easily expended resource than computational speed.
