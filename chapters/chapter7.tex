@@ -1,6 +1,6 @@
 \chapter{Synthesizing Sound}
 
-The most important feature of a synthesizer is its capability to synthesize sound. Synthesizing sound means to combine two or more (audio) signals to produce a new signal. The many possibilities to synthesize sound waves with variable parameters enable musicians to create an uncountable number of different sounds. A synthesizer can be configured to resemble natural sounds such as that of wind or water waves, can emulate other instruments like pianos, guitars or bass drums and, finally, a synthesizer can also be used to produce entirely new, electronic sounds. However, not all synthesis methods available to the creator of a digital synthesizer are equally suited to the various possible sounds just described. This chapter will examine five popular methods of synthesis --- Additive, Subtractive, Granular, AM and FM synthesis --- while focusing especially on the last technique, which was implemented in C++ for the purpose of this thesis.
+The most important feature of a synthesizer is its capability to synthesize sound. Synthesizing sound means to combine two or more (audio) signals to produce a new signal. The many possibilities to synthesize sound waves with variable parameters enable musicians to create an uncountable number of different sounds. A synthesizer can be configured to resemble natural sounds such as that of wind or water waves, can emulate other instruments like pianos, guitars or bass drums and, finally, a synthesizer can also be used to produce entirely new, electronic sounds. However, not all synthesis methods available to the creator of a digital synthesizer are equally suited to the various possible sounds just described. This chapter will examine four popular methods of synthesis --- Additive, Subtractive, AM and FM synthesis --- while focusing especially on the last technique, which was implemented in C++ for the purpose of this thesis.
 
 \section{Additive Synthesis}
 
@@ -9,10 +9,6 @@ Additive Synthesis was already introduced in Chapter 2 as a method to produce co
 \section{Subtractive Synthesis}
 
 While Additive Synthesis creates sounds by summing many individual waveforms, Subtractive Synthesis starts out with a complex waveform very rich in harmonics, like a sawtooth wave, and then subtracts or "carves" away parts of that sound by filtering or attenuating selected frequencies. A very prominent example of Subtractive Synthesis is the human voice, which makes use of the larynx to shape air coming from the lungs in order to produce certain phonemes, which eventually make up words, sentences and our ability to communicate.
-
-\section{Granular Synthesis}
-
-A very special form of synthesis is "Granular Synthesis". It produces sound by "splicing" or "concatenating" very short sound samples, referred to as \emph{grains}, "often only a few milliseconds in length". \citebs{12} The synthesized sound can be altered by changing the frequency, amplitude or phase at which certain grains are played. The synthesizer \emph{Malstr{\"o}m} by Propellerhead implements a form of Granular Synthesis (Propellerhead, \url{https://www.propellerheads.se/products/reason/instruments/malstrom/}, accessed 4 January 2015).
 
 \section{Amplitude Modulation Synthesis}
 
