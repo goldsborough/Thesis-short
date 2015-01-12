@@ -322,24 +322,6 @@ Daniel R. Mitchell advises that the length of the table be a power of two for ma
 
 \noindent One important fact to mention, also discussed by Jari Kleimola, is that because the interpolation algorithm from Table \ref{code:interp} must have access to the sample value at index $i+1$, $i$ being the current index, an additional sample must be appended to the Wavetable to avoid a \texttt{BAD\_ACCESS} error when $i$ is at the last valid position in the table. This added sample has the same value as the first sample in the table to avoid a discontinuity. Therefore, the period of the waveform actually only fills 4095 of the 4096 indices of the Wavetable, as the 4096th sample is equal to the first.
 
-\subsection{File Format}
-
-For maximum efficiency, the Wavetables are not created at program startup but read from a binary file. To prevent the synthesizer program from accidentally reading faulty files, some simple identification string must be added to the file. Therefore, Wavetable files contain a 6-byte ID string equal to the name of the synthesizer, \emph{Anthem}, after which the 32 KB of Wavetable data follow. Additionally, Wavetable files end with a \texttt{.wavetable} file extension. Table \ref{code:wtfile} displays a function to read such a Wavetable file and Figure \ref{fig:wtfile} shows the first few bytes of a Wavetable file when opened as plain-text. The total size of a Wavetable file is exactly 32774 bytes, 32768 bytes (32KB) of Wavetable data and 6 bytes for the ID string.
-
-\begin{table}[t!]
-  \code{file.cpp}
-  \caption{C++ code to read a Wavetable file. }
-  \label{code:wtfile}
-\end{table}
-
-\begin{figure}[h!]
-  \includegraphics[scale=0.7]{img/wtfile}
-  \caption{The first few bytes of a Wavetable file.}
-  \label{fig:wtfile}
-\end{figure}
-
-\pagebreak
-
 \section{Noise}
 
 A noisy signal is a signal in which some or all samples take on random values. Generally, noise is considered as something to avoid, as it may lead to unwanted distortion of a signal. Nevertheless, noise can be used as an interesting effect when creating music. Its uses include, for example, the modeling of the sound of wind or the crashing of water waves against the shore of a beach. Some people enjoy the change in texture noise induces in a sound, others find noise relaxing and even listen to it while studying. \citebs{76} Unlike all audio signals\footnote{The term "waveform" would be incorrect here, as noise is not periodic and thus cannot really be seen as a waveform.} presented so far, noise cannot\footnotemark{} be stored in a Wavetable, as it must be random throughout its duration and not repeat periodically for a proper sensation of truly \emph{random} noise. Another interesting fact about noise is that it is common to associate certain forms of noise with colors. The \emph{color} of a noise signal describes, acoustically speaking, the \emph{texture} or \emph{timbre} \footnotemark[4]{} of the sound produced, as well as, scientifically speaking, the spectral power density and frequency content of the signal. \vspace{\baselineskip}
