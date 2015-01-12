@@ -30,124 +30,7 @@ double phase = pi/2.0;
 
 \section{Complex Waveforms}
 
-Now that the process of creating simple sine and cosine waves has been discussed, the generation of more complex waveforms can be examined. Generally, there are two methods by which complex waveforms can be created in a digital synthesis system: mathematical calculation or additive synthesis.
-
-\subsection{Mathematical Calculation of Complex Waveforms}
-
-In the first case --- mathematical calculation, waveforms are computed according to certain mathematical formulae and thus yield \emph{perfect} or \emph{exact} waveforms, such as a square wave that is equal to its maximum amplitude exactly one half of a period and equal to its minimum amplitude for the rest of the period. While these waveforms produce a very crisp and clear sound, they are rarely found in nature due to their degree of perfection and are consequently rather undesirable for a music synthesizer. Nevertheless, they are considerably useful for modulating other signals, as tiny acoustical imperfections such as those found in additively synthesized waveforms can result in unwanted distortion which is not encountered when using mathematically calculated waveforms. Therefore, exact waveforms are the best choice for modulation sources such as Low Frequency Oscillators (LFOs), which are discussed in later chapters. \citebs{71}
-
-
-The following paragraphs will analyze how three of the most common waveforms found in digital synthesizers --- the square, the sawtooth and the triangle wave --- can be generated via mathematical calculation.
-
-\subsubsection{Square Waves}
-
-Ideally, a square wave is equal to its maximum amplitude for exactly one half of a period and equal to its minimum amplitude for the other half of the same period. Equation \ref{eq:dsquare1} shows how to calculate a single period of a square wave, where the independent variable $t$ as well as the period $T$ can be either in samples or in seconds. A mathematical Equation for a full, periodic square wave function is given by Equation \ref{eq:dsquare2}, where $t$ is time in seconds and the frequency $f$ in Hertz. An equivalent C++ computer program is shown in Table \ref{code:dsquare}.
-
-\begin{multicols}{2}
-
-  \begin{equation}
-    f(t) =
-    \begin{cases}
-      1,& \text{if } 0 \leq t < \frac{T}{2}\\
-      -1,& \text{if } \frac{T}{2} \leq t < T
-    \end{cases}
-    \label{eq:dsquare1}
-  \end{equation}
-
-  \begin{equation}
-    f(t) =
-    \begin{cases}
-      1,& \text{if } \sin(2 \pi f t) > 0\\
-      -1,& \text{otherwise}
-    \end{cases}
-    \label{eq:dsquare2}
-  \end{equation}
-
-\end{multicols}
-
-\begin{table}
-  \sidecap{C++ code to generate and return one period of a square wave, where \texttt{period} is the period duration in samples. Note that this function increments in sample time, measured in seconds, rather than actual samples. This prevents a one-sample quantization error at the mid-point, since time can always be halved whereas a sample is a fixed entity and cannot be broken down any further.}{code:dsquare}{\code{dsquare.cpp}}
-\end{table}
-
-\subsubsection{Sawtooth Waves}
-
-An ideal sawtooth wave descends from its maximum amplitude to its minimum amplitude linearly before jumping back to the maximum amplitude at the beginning of the next period. A mathematical equation for a single period of such a sawtooth wave function, calculated directly from the phase, is given by Equation \ref{eq:dsaw1} \citebs{68}. Alternatively, the function can depend on time or on samples, as shown by Equation \ref{eq:dsaw2}, where $T$ is the period. A computer program to compute one period of a sawtooth wave is given in Table \ref{code:dsaw}.
-
-\begin{multicols}{2}
-
-  \begin{equation}
-    f(\phi) =
-    \begin{cases}
-      -\frac{\phi}{\pi} + 1,& \text{if } 0 \leq \phi < 2 \pi
-    \end{cases}
-    \label{eq:dsaw1}
-  \end{equation}
-
-  \begin{equation}
-    f(t) =
-    \begin{cases}
-      -\frac{2t}{T} + 1,& \text{if } 0 \leq t < 1
-    \end{cases}
-    \label{eq:dsaw2}
-  \end{equation}
-
-\end{multicols}
-
-\begin{table}
-  \sidecap{C++ code to generate one period of a sawtooth wave function, where \texttt{period} is the period duration in samples.}{code:dsaw}{\code{dsaw.cpp}}
-\end{table}
-
-\subsubsection{Triangle waves}
-
-A triangle wave can be seen as a linear sine wave. It increments from its minimum amplitude to its maximum amplitude linearly one half of a period and decrements back to the minimum during the other half. Simply put, "[a] triangle wave is a linear increment or decrement that switches direction every $\pi$ radians" \citebs{69}. A mathematical definition for one period of a triangle wave is given by Equation  \ref{eq:dtri1}, where $\phi$ is the phase in radians. If $\phi$ is kept in the range of $[-\pi;\pi]$ rather than the usual range of $[0;2 \pi]$, the subtraction of $\pi$ can be eliminated, yielding Equation  \ref{eq:dtri2}. If the dependent variable is time in seconds or samples, Equation  \ref{eq:dtri3} can be used for a range of $[0;T]$, where $T$ is the period, and Equation  \ref{eq:dtri4} for a range of $[-\frac{T}{2};\frac{T}{2}]$. A C++ implementation is shown in Table \ref{code:dtri}.
-
-\begin{multicols}{2}
-
-  \begin{equation}
-    f(\phi) =
-    \begin{cases}
-      1 - \frac{2 |\phi - \pi|}{\pi},& \text{if } 0 \leq \phi < 2 \pi
-    \end{cases}
-    \label{eq:dtri1}
-  \end{equation}
-
-  \begin{equation}
-    f(\phi) =
-    \begin{cases}
-      1 - \frac{2 |\phi|}{\pi},& \text{if } -\pi \leq \phi < \pi
-    \end{cases}
-    \label{eq:dtri2}
-  \end{equation}
-
-\end{multicols}
-
-\begin{multicols}{2}
-
-  \begin{equation}
-    f(t) =
-    \begin{cases}
-      1 - \frac{4 |t - \frac{T}{2}|}{T},& \text{if } 0 \leq t < 1
-    \end{cases}
-    \label{eq:dtri3}
-  \end{equation}
-
-  \begin{equation}
-    f(t) =
-    \begin{cases}
-      1 - \frac{4 |t|}{T},& \text{if } -\frac{T}{2} \leq t < \frac{T}{2}
-    \end{cases}
-    \label{eq:dtri4}
-  \end{equation}
-
-\end{multicols}
-
-\begin{table}
-  \sidecap{C++ program to compute one period of a triangle wave.}{code:dtri}{\code{dtri.cpp}}
-\end{table}
-
-\pagebreak
-
-\subsection{Additive Synthesis}
+Now that the process of creating simple sine and cosine waves has been discussed, the generation of more complex waveforms can be examined. Generally, there are two methods by which complex waveforms can be created in a digital synthesis system: mathematical calculation and additive synthesis. In the first case --- mathematical calculation, waveforms are computed according to certain mathematical formulae and thus yield \emph{perfect} or \emph{exact} waveforms, such as a square wave that is equal to its maximum amplitude exactly one half of a period and equal to its minimum amplitude for the rest of the period. While these waveforms produce a very crisp and clear sound, they are rarely found in nature due to their degree of perfection and are consequently rather undesirable for a music synthesizer. \vspace{\baselineskip}
 
 The second method of generating complex waveforms, additive synthesis, produces waveforms that, despite not being mathematically perfect, are closer to the waveforms found naturally. This method involves the summation of a theoretically infinite, practically finite set of sine and cosine waves with varying parameters. Additive synthesis is often called Fourier Synthesis, after the 18th century French scientist, Joseph Fourier, who first described the process and associated phenomena of summing sine and cosine waves to produce complex waveforms. This calculation of a complex, periodic waveform from a sum of sine and cosine functions is also referred to as a Fourier Transform or a Fourier Series, both part of the Fourier Theorem. In a Fourier Series, a single sine or cosine component is either called a harmonic, an overtone or a partial. All three name the same idea of a waveform with a frequency that is an \emph{integer multiple} of some fundamental pitch or frequency. \citebs{64} Throughout this thesis the term \emph{partial} will be preferred.
 
@@ -171,7 +54,7 @@ Equation 2.13 gives the general definition of a discrete Fourier Transform and E
   \label{code:partial}
 \end{table}
 
-\noindent The following paragraphs will examine how the three waveforms presented in Section 2.2.1 can be synthesized additively.
+The following paragraphs will analyze how three of the most common waveforms found in digital synthesizers --- the square, the sawtooth and the triangle wave --- can be generated via additive synthesis.
 
 \subsubsection{Square Waves}
 
