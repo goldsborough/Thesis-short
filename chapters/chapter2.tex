@@ -37,10 +37,7 @@ Now that the process of creating simple sine and cosine waves has been discussed
 In the first case --- mathematical calculation, waveforms are computed according to certain mathematical formulae and thus yield \emph{perfect} or \emph{exact} waveforms, such as a square wave that is equal to its maximum amplitude exactly one half of a period and equal to its minimum amplitude for the rest of the period. While these waveforms produce a very crisp and clear sound, they are rarely found in nature due to their degree of perfection and are consequently rather undesirable for a music synthesizer. Nevertheless, they are considerably useful for modulating other signals, as tiny acoustical imperfections such as those found in additively synthesized waveforms can result in unwanted distortion which is not encountered when using mathematically calculated waveforms. Therefore, exact waveforms are the best choice for modulation sources such as Low Frequency Oscillators (LFOs), which are discussed in later chapters. \citebs{71}
 
 
-The following paragraphs will analyze how four of the most common waveforms found in digital synthesizers --- the square, the sawtooth, the ramp and the triangle wave --- can be generated via mathematical calculation.
-
-
-\emph{Note: There have found to be disparities in literature over which waveform is a sawtooth and which a ramp wave. This thesis will consider a sawtooth wave as descending from maximum to minimum amplitude with time and a ramp wave as ascending from minimum to maximum amplitude with time.}
+The following paragraphs will analyze how three of the most common waveforms found in digital synthesizers --- the square, the sawtooth and the triangle wave --- can be generated via mathematical calculation.
 
 \subsubsection{Square Waves}
 
@@ -100,39 +97,9 @@ An ideal sawtooth wave descends from its maximum amplitude to its minimum amplit
   \sidecap{C++ code to generate one period of a sawtooth wave function, where \texttt{period} is the period duration in samples.}{code:dsaw}{\code{dsaw.cpp}}
 \end{table}
 
-\subsubsection{Ramp Waves}
-
-A ramp wave is, quite simply, an inverted sawtooth wave. It ascends from its minimum amplitude to its maximum amplitude linearly, after which it jumps back down to the minimum amplitude. Consequently, Equations \ref{eq:dramp1} and \ref{eq:dramp2} differ from Equations \ref{eq:dsaw1} and \ref{eq:dsaw2} only in their sign and offset. The equivalent C++ implementation shown in Table \ref{code:dramp} also reflects these differences.
-
-\begin{multicols}{2}
-
-  \begin{equation}
-    f(\phi) =
-    \begin{cases}
-      \frac{\phi}{\pi} - 1,& \text{if } 0 \leq \phi < 2 \pi
-    \end{cases}
-    \label{eq:dramp1}
-  \end{equation}
-
-  \begin{equation}
-    f(t) =
-    \begin{cases}
-      \frac{2t}{T} - 1,& \text{if } 0 \leq t < 1
-    \end{cases}
-    \label{eq:dramp2}
-  \end{equation}
-
-\end{multicols}
-
-\begin{table}
-  \sidecap{C++ ramp wave generator. This code differs from the program shown in Table \ref{code:dsaw} solely in the amplitude offset (-1 instead of 1) and the increment, which is now positive. }{code:dramp}{\code{dramp.cpp}}
-\end{table}
-
-\pagebreak
-
 \subsubsection{Triangle waves}
 
-A triangle wave can be seen as a combination of ramp and sawtooth wave, or as a linear sine wave. It increments from its minimum amplitude to its maximum amplitude linearly one half of a period and decrements back to the minimum during the other half. Simply put, "[a] triangle wave is a linear increment or decrement that switches direction every $\pi$ radians" \citebs{69}. A mathematical definition for one period of a triangle wave is given by Equation  \ref{eq:dtri1}, where $\phi$ is the phase in radians. If $\phi$ is kept in the range of $[-\pi;\pi]$ rather than the usual range of $[0;2 \pi]$, the subtraction of $\pi$ can be eliminated, yielding Equation  \ref{eq:dtri2}. If the dependent variable is time in seconds or samples, Equation  \ref{eq:dtri3} can be used for a range of $[0;T]$, where $T$ is the period, and Equation  \ref{eq:dtri4} for a range of $[-\frac{T}{2};\frac{T}{2}]$. A C++ implementation is shown in Table \ref{code:dtri}.
+A triangle wave can be seen as a linear sine wave. It increments from its minimum amplitude to its maximum amplitude linearly one half of a period and decrements back to the minimum during the other half. Simply put, "[a] triangle wave is a linear increment or decrement that switches direction every $\pi$ radians" \citebs{69}. A mathematical definition for one period of a triangle wave is given by Equation  \ref{eq:dtri1}, where $\phi$ is the phase in radians. If $\phi$ is kept in the range of $[-\pi;\pi]$ rather than the usual range of $[0;2 \pi]$, the subtraction of $\pi$ can be eliminated, yielding Equation  \ref{eq:dtri2}. If the dependent variable is time in seconds or samples, Equation  \ref{eq:dtri3} can be used for a range of $[0;T]$, where $T$ is the period, and Equation  \ref{eq:dtri4} for a range of $[-\frac{T}{2};\frac{T}{2}]$. A C++ implementation is shown in Table \ref{code:dtri}.
 
 \begin{multicols}{2}
 
@@ -204,7 +171,7 @@ Equation 2.13 gives the general definition of a discrete Fourier Transform and E
   \label{code:partial}
 \end{table}
 
-\noindent The following paragraphs will examine how the four waveforms presented in Section 2.2.1 can be synthesized additively.
+\noindent The following paragraphs will examine how the three waveforms presented in Section 2.2.1 can be synthesized additively.
 
 \subsubsection{Square Waves}
 
@@ -248,29 +215,6 @@ A sawtooth wave is slightly simpler to create through additive synthesis, as it 
   \code{asaw.cpp}
   \caption{C++ code for a sawtooth wave with 64 partials.}
   \label{code:asaw}
-\end{table}
-
-\pagebreak
-
-\subsubsection{Ramp Waves}
-
-Ramp waves are essentially the inverse of sawtooth waves. Therefore, sinusoids can be summed as for a sawtooth function, the only difference being that the sign of each partial's amplitude is set to negative instead of positive. Equation \ref{eq:aramp} gives a mathematical definition, Figure \ref{fig:ramp} displays a set of ramp waveforms with different partial numbers and Table \ref{code:aramp} again shows the accompanying C++ code.
-
-\begin{equation}
-  f(t) = \sum\limits_{n=1}^N -\frac{1}{n} \sin(\omega n t)
-  \label{eq:aramp}
-\end{equation}
-
-\begin{figure}
-  \includegraphics[scale=0.2]{img/ramp}
-  \caption{Ramp waves with 2, 4, 8, 16, 32 and 64 partials.}
-  \label{fig:ramp}
-\end{figure}
-
-\begin{table}
-  \code{aramp.cpp}
-  \caption{C++ code for a ramp wave with 64 partials.}
-  \label{code:aramp}
 \end{table}
 
 \pagebreak
