@@ -89,35 +89,3 @@ When a signal's frequency exceeds the Nyquist limit, it is said to produce an \e
   \label{fig:approx}
 
 \end{figure}
-
-\pagebreak
-
-\section{Overflow}
-
-Another interesting property of digital sound, which is not encountered in the analog realm, is that it can overflow. If one attempts to increase the loudness of something in the analog world, for example by hitting a drum more intensely, the expected result is a louder sound. In the digital realm however, it may occur that attempting to increase a signal's amplitude does not result in an increased loudness, but in distortion. The cause of this phenomenon lies in the way digital audio is stored. Since computer memory is a finite resource, each sample has a dedicated portion of computer memory allocated to it. For example, the Waveform Audio File Format (WAVE), a common computer file format for audio data, stores each sample of an audio track as a 16-bit signed integer. A 16-bit signed integer gives a possible range of $-2^{16-1}$ to $2^{16-1}$ ($16-1$ because the most significant bit is used as the sign bit in two's complement representation). This means that a signal with an amplitude of 1 will be stored as 32767, an amplitude of 0.5 as 16384, an amplitude of -1 as -32768 and so on. If one tries to increase the amplitude of a signal whose value has already saturated the available range and space allocated to it, in this case 32767 on the positive end and -32768 on the negative end, the result is that the integer with which the sample is stored \emph{overflows}. Because WAVE files (and many other storage media) store samples as \emph{signed} integers, overflow always results in a change of sign:
-
-$$32767_{10} = 0111111111111111_{2}$$
-$$0111111111111111_{2} + 1 = 1000000000000000_{2} = -32768_{10}$$
-$$1000000000000000_{2} - 1 = 0111111111111111_{2} = 32767_{10}$$
-
-A visualization of the result of increasing the amplitude of a signal with a saturated value (an amplitude of 1), shown in Figure \ref{fig:no-over}, is given in Figure \ref{fig:over}.
-
-\begin{figure}[h!]
-
-  \includegraphics[scale=0.5]{img/no-over}
-
-  \caption{A typical sinusoidal signal with an amplitude of 1. The integer range provided by the allocated memory for the top-most sample is saturated, meaning it is equal to $32767_{10}$ or $0111111111111111_{2}$.}
-
-  \label{fig:no-over}
-
-\end{figure}
-
-\begin{figure}[h!]
-
-  \includegraphics[scale=0.5]{img/over}
-
-  \caption{What happens when the amplitude of the signal from Figure \ref{fig:no-over} is increased by a factor of 2. Multiple samples have overflowed and thus changed their sign. Because of the way two's-complement representation is implemented, the signal continues it's path as if no overflow had ever occurred. The only difference being that the sign has changed mid-way.}
-
-  \label{fig:over}
-
-\end{figure}

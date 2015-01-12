@@ -182,7 +182,7 @@ A triangle wave can be seen as a combination of ramp and sawtooth wave, or as a 
 
 \subsection{Additive Synthesis}
 
-The second method of generating complex waveforms, additive synthesis, produces waveforms that, despite not being mathematically perfect, are closer to the waveforms found naturally. This method involves the summation of a theoretically infinite, practically finite set of sine and cosine waves with varying parameters. Additive synthesis is often called Fourier Synthesis, after the 18th century French scientist, Joseph Fourier, who first described the process and associated phenomena of summing sine and cosine waves to produce complex waveforms. This calculation of a complex, periodic waveform from a sum of sine and cosine functions is also referred to as a Fourier Transform or a Fourier Series, both part of the Fourier Theorem. In a Fourier Series, a single sine or cosine component is either called a harmonic, an overtone or a partial. All three name the same idea of a waveform with a frequency that is an \emph{integer multiple} of some fundamental pitch or frequency. \citebs{64} Throughout this thesis the term \emph{partial} will be preferred. 
+The second method of generating complex waveforms, additive synthesis, produces waveforms that, despite not being mathematically perfect, are closer to the waveforms found naturally. This method involves the summation of a theoretically infinite, practically finite set of sine and cosine waves with varying parameters. Additive synthesis is often called Fourier Synthesis, after the 18th century French scientist, Joseph Fourier, who first described the process and associated phenomena of summing sine and cosine waves to produce complex waveforms. This calculation of a complex, periodic waveform from a sum of sine and cosine functions is also referred to as a Fourier Transform or a Fourier Series, both part of the Fourier Theorem. In a Fourier Series, a single sine or cosine component is either called a harmonic, an overtone or a partial. All three name the same idea of a waveform with a frequency that is an \emph{integer multiple} of some fundamental pitch or frequency. \citebs{64} Throughout this thesis the term \emph{partial} will be preferred.
 
 Equation 2.13 gives the general definition of a discrete Fourier Transform and Equation 2.14 shows a simplified version of Equation 2.13. Table \ref{code:partial} presents a C++ struct to represent a single partial and Listing \ref{code:add} a piece of C++ code to compute one period of any Fourier Series.
 
@@ -303,172 +303,6 @@ The process of generating triangle waves additively differs from previous wavefo
 
 \pagebreak
 
-\subsection{Smooth Waveforms}
-
-One noticeable problem with square, sawtooth and ramp waves is that they have very sharp transitions at certain points in their waveforms. An example for such a transition is at the midpoint, $\frac{T}{2}$, of a square wave, where the amplitude jumps from its maximum to its minimum. While these transitions and jumps in amplitude contribute to the characteristic sound of these waves when used for music, they can pose a problem when they are used for modulation, as sharp transitions in amplitude translate to clicking sounds acoustically. An effective and direct solution to this problem is to mathematically calculate a waveform that is already smoothed out at these critical points. The following two paragraphs propose a set of empirically determined functions to calculate "smooth" square and sawtooth waves.
-
-\subsubsection{Smooth Square Waves}
-
-Smooth square waves can be calculated mathematically as a set of four power functions with a very large exponent that change their sign after the midpoint. The exponent chosen, 50, was determined entirely experimentally. Equations \ref{eq:ssquareA} to \ref{eq:ssquareD} display the four power functions and their respective range of definition. Figure \ref{fig:ssquare} shows the resulting visualization, where each individual power function is highlighted in a different colour as a visual aid.
-
-\begin{equation}
-  a(t) =
-  \begin{cases}
-    (t - 1)^{50} - 1,& \text{if } 0 \leq t < \frac{T}{4}
-  \end{cases}
-  \label{eq:ssquareA}
-\end{equation}
-
-\begin{equation}
-  b(t) =
-  \begin{cases}
-    (t + 0.5)^{50} - 1,& \text{if } \frac{T}{4} \leq t < \frac{T}{2}
-  \end{cases}
-  \label{eq:ssquareB}
-\end{equation}
-
-\begin{equation}
-  c(t) =
-  \begin{cases}
-    -(t - 1.5)^{50} + 1,& \text{if } \frac{T}{2} \leq t < \frac{3T}{4}
-  \end{cases}
-  \label{eq:ssquareC}
-\end{equation}
-
-\begin{equation}
-  d(t) =
-  \begin{cases}
-    -t^{50} + 1,& \text{if } \frac{3T}{4} \leq t < T
-  \end{cases}
-  \label{eq:ssquareD}
-\end{equation}
-
-\begin{figure}[t!]
-  \includegraphics[scale=0.6]{img/ssquare}
-  \caption{One period of a smooth square wave as the sum of four piecewise power functions.}
-  \label{fig:ssquare}
-\end{figure}
-
-\pagebreak
-
-\subsubsection{Smooth Sawtooth Waves}
-
-For sawtooth waves, the only critical area of transition is the point at which one period ends and the next begins, as the amplitude jumps back to the maximum from its minimum value. To make this transition smoother, one can use two very steep quadratic functions, one positive and one negative, that intersect at the midpoint of the transition. If one allocates nine tenths of one period for the normal descent of the sawtooth function from its maximum to its minimum, the transition can take place in the last tenth of the period. Equation \ref{eq:ssawA} shows an altered version of the sawtooth wave function introduced in Section 2.2.1 and Equations \ref{eq:ssawB} and \ref{eq:ssawC} the two aforementioned quadratic functions. Figure \ref{fig:ssaw} visualizes the resulting waveform.
-
-\begin{equation}
-  a(t) =
-  \begin{cases}
-    \frac{-2t}{0.9T} + 1 = \frac{-20t}{9T} + 1,& \text{if } 0 \leq t < \frac{9T}{10}
-  \end{cases}
-  \label{eq:ssawA}
-\end{equation}
-
-\begin{equation}
-  b(t) =
-  \begin{cases}
-    400(t-0.9)^2 - 1,& \text{if } \frac{9T}{10} \leq t < \frac{95T}{100}
-  \end{cases}
-  \label{eq:ssawB}
-\end{equation}
-
-\begin{equation}
-  c(t) =
-  \begin{cases}
-    -400(t-1)^2 + 1,& \text{if } \frac{95T}{100} \leq t < T
-  \end{cases}
-  \label{eq:ssawC}
-\end{equation}
-
-\pagebreak
-
-\subsubsection{Smooth Ramp Waves}
-
-Smooth ramp waves are created identically to smooth sawtooth waves, except for the difference in sign and offset of the piecewise functions. This is shown by Equations \ref{eq:srampA} to \ref{eq:srampC} as well as Figure \ref{fig:sramp}.
-
-\begin{equation}
-  a(t) =
-  \begin{cases}
-    \frac{2t}{0.9T} - 1 = \frac{-20t}{9T} + 1,& \text{if } 0 \leq t < \frac{9T}{10}
-  \end{cases}
-  \label{eq:srampA}
-\end{equation}
-
-\begin{equation}
-  b(t) =
-  \begin{cases}
-    -400(t-0.9)^2 + 1,& \text{if } \frac{9T}{10} \leq t < \frac{95T}{100}
-  \end{cases}
-  \label{eq:srampB}
-\end{equation}
-
-\begin{equation}
-  c(t) =
-  \begin{cases}
-    400(t-1)^2 - 1,& \text{if } \frac{95T}{100} \leq t < T
-  \end{cases}
-  \label{eq:srampC}
-\end{equation}
-
-\begin{figure}
-
-  \TopFloatBoxes
-
-  \begin{floatrow}
-
-    \ffigbox{\caption{A smooth sawtooth wave.} \label{fig:ssaw}}{ \includegraphics[scale=0.6]{img/ssaw}}
-
-    \ffigbox{\caption{A smooth ramp wave.} \label{fig:sramp}}{ \includegraphics[scale=0.6]{img/sramp}}
-
-  \end{floatrow}
-
-\end{figure}
-
-\pagebreak
-
-\subsection{Sine Waves with Different Bit Widths}
-
-The bit width of a waveform determines its resolution, i.e. the number of numerical values the amplitude of a signal can take. Common values for the resolution of a waveform are 64 bits, as provided by the C++ double-precision floating-point data type \texttt{double}, or 16 bits, as used by the Waveform Audio File Format (WAVE). Reducing the bit width of a waveform can give the impression of an "old-school" sound, as older synthesis systems from the 20th century were often limited to low bit-width hardware configurations. Consequently, some digital synthesizers, such as Ableton's\footnotemark{} \emph{Operator}, additionally provide waveforms with other bit widths such as 4 or 8 bits. Table \ref{tb:bitw} shows bit width values alongside the number of possibilities a sample can take when the given bit width is used. Note that in general, $n$ bits yield $2^n$ possible values. Figures \ref{fig:sine3} and \ref{fig:sine4} show sine waves with a bit width of 3 and 4 bits, respectively.
-
-\footnotetext{"Ableton AG is a Berlin-based music software company that produces and distributes the production and performance program Ableton Live and a collection of related instruments and sample libraries [...]". Source: Wikipedia \url{http://en.wikipedia.org/wiki/Ableton} Homepage: \url{http://www.ableton.com/}}
-
-\begin{table}[th!]
-
-  \centering
-
-  \begin{tabular}[]{| l | l |}
-    \hline
-    \rowcolor[gray]{0.8}
-    Bit width & Possibilities\\\hline
-    2 & 4\\\hline
-    3 & 8\\\hline
-    4 & 16\\\hline
-    8 & 256\\\hline
-    16 & 65536\\\hline
-    32 & 4294967296\\\hline
-    64 & 18446744073709551616\\
-    \hline
-  \end{tabular}
-
-  \caption{Bit widths alongside the number of possible values a sample can take when the given bit width is used.}
-
-  \label{tb:bitw}
-
-\end{table}
-
-\begin{figure}[th!]
-  \includegraphics[scale=0.5]{img/sine3}
-  \caption{A 3-bit sine wave.}
-  \label{fig:sine3}
-\end{figure}
-
-\begin{figure}[th!]
-  \includegraphics[scale=0.5]{img/sine4}
-  \caption{A 4-bit sine wave.}
-  \label{fig:sine4}
-\end{figure}
-
-\pagebreak
-
 \section{The Gibbs Phenomenon and the Lanczos Sigma Factor}
 
 Examining Figure \ref{fig:gibbsb}, which displays an additively synthesized square wave function with 64 partials, one may observe that additive synthesis, the summation of sine waves to produce complex waveforms, produces an overshoot --- slight ripples or "horns" --- at the ends of each peak and trough of a waveform. This is known as the Gibbs Phenomenon, named after the American scientist Josiah Willard Gibbs who first described it in 1898, and is "the result of summing a finite series of partials rather than the infinite series of partials specified by the Fourier transform" \citebs{67}. Acoustically, this artifact has little influence on the sound of the produced waveform. However, for modulation, this imperfection may render the resulting sound unsatisfactory. A common way to reduce the Gibbs Phenomenon is to apply the Lanczos Sigma ($\sigma$) Factor to each partial of a Fourier Series. This is often called \emph{sigma-approximation}. The definition of the Lanczos Sigma Factor is given in Equation \ref{eq:lanczos}, where $n$ is the current partial number and $M$ the total number of partials in a Fourier Summation. In the \texttt{additive} function shown in Listing \ref{code:add}, the Lanczos Sigma Factor is implemented in lines 48 to 54. Figure \ref{fig:gibbsa} shows the same square wave from Figure \ref{fig:gibbsb} after sigma-approximation.
@@ -478,7 +312,7 @@ Examining Figure \ref{fig:gibbsb}, which displays an additively synthesized squa
   \label{eq:lanczos}
 \end{equation}
 
-\begin{figure}
+\begin{figure}[hb!]
   \includegraphics[scale=0.5]{img/gibbsb}
   \caption{An additively synthesized square wave with 64 partials before sigma-approximation.}
   \label{fig:gibbsb}
@@ -529,13 +363,12 @@ For almost all configurations of frequencies, table lengths and sample rates, th
 \subsection{Table Length}
 
 The length of the Wavetable must be chosen carefully and consider both memory efficiency and waveform resolution. An equation to calculate the size of a single wavetable in Kilobytes is given by Equation \ref{eq:tablesize}, where L is the table length and $N$ the number of bytes provided by the resolution of the data type used for samples, e.g. 8 bytes for the double-precision floating-point data type \texttt{double}.
-
 \begin{equation}
   Size = \frac{L \cdot N}{1024}
   \label{eq:tablesize}
 \end{equation}
 
-\noindent Daniel R. Mitchell advises that the length of the table be a power of two for maximum efficiency. \citebs{86} Moreover, during an E-Mail exchange with Jari Kleimola, author of the 2005 master's thesis "Design and Implementation of a Software Sound Synthesizer", it was discovered that "as a rule of thumb", the table length should not exceed the processor cache size. A relevant excerpt of this e-mail exchange is depicted in Figure \ref{fig:jari}. Considering both pieces of advice, it was decided that a Wavetable size of 4096 ($2^{12}$), which translates to 32 KB of memory, would be suitable.
+Daniel R. Mitchell advises that the length of the table be a power of two for maximum efficiency. \citebs{86} Moreover, during an E-Mail exchange with Jari Kleimola, author of the 2005 master's thesis "Design and Implementation of a Software Sound Synthesizer", it was discovered that "as a rule of thumb", the table length should not exceed the processor cache size. A relevant excerpt of this e-mail exchange is depicted in Figure \ref{fig:jari}. Considering both pieces of advice, it was decided that a Wavetable size of 4096 ($2^{12}$), which translates to 32 KB of memory, would be suitable.
 
 \begin{figure}
   \includegraphics[scale=0.7]{img/jari}
@@ -565,35 +398,27 @@ For maximum efficiency, the Wavetables are not created at program startup but re
 
 \section{Noise}
 
-A noisy signal is a signal in which some or all samples take on random values. Generally, noise is considered as something to avoid, as it may lead to unwanted distortion of a signal. Nevertheless, noise can be used as an interesting effect when creating music. Its uses include, for example, the modeling of the sound of wind or the crashing of water waves against the shore of a beach. Some people enjoy the change in texture noise induces in a sound, others find noise relaxing and even listen to it while studying. \citebs{76} Unlike all audio signals\footnote{The term "waveform" would be incorrect here, as noise is not periodic and thus cannot really be seen as a waveform.} presented so far, noise cannot\footnotemark{} be stored in a Wavetable, as it must be random throughout its duration and not repeat periodically for a proper sensation of truly \emph{random} noise.
+A noisy signal is a signal in which some or all samples take on random values. Generally, noise is considered as something to avoid, as it may lead to unwanted distortion of a signal. Nevertheless, noise can be used as an interesting effect when creating music. Its uses include, for example, the modeling of the sound of wind or the crashing of water waves against the shore of a beach. Some people enjoy the change in texture noise induces in a sound, others find noise relaxing and even listen to it while studying. \citebs{76} Unlike all audio signals\footnote{The term "waveform" would be incorrect here, as noise is not periodic and thus cannot really be seen as a waveform.} presented so far, noise cannot\footnotemark{} be stored in a Wavetable, as it must be random throughout its duration and not repeat periodically for a proper sensation of truly \emph{random} noise. Another interesting fact about noise is that it is common to associate certain forms of noise with colors. The \emph{color} of a noise signal describes, acoustically speaking, the \emph{texture} or \emph{timbre} \footnotemark[4]{} of the sound produced, as well as, scientifically speaking, the spectral power density and frequency content of the signal. \vspace{\baselineskip}
+
+White noise is the most frequencly encountered form, or color, of noise. It is a random signal in its purest and most un-filtered form. In such a signal, all possible frequencies are found with a uniform probability distribution, meaning they are distributed at equal intensity throughout the signal. The association of noise with colors actually stems from the connection between white noise and white light, which is said to be composed of almost all color components at an approximately equal distribution. Figure \ref{fig:wnoise} shows a typical white noise signal in the time domain, Figure \ref{fig:wnoisez} gives a close-up view of Figure \ref{fig:wnoise}, Figure \ref{fig:wnoisefreq} displays the frequency spectrum of a white noise signal and Table \ref{code:wnoise} shows the implementation of a simple C++ class to produce white noise.
 
 \footnotetext{Noise could theoretically be stored in a Wavetable, of course. However, even a very large Wavetable destroys the randomness property to some extent and would thus invalidate the idea behind noise being truly random.}
 
-\subsection{Colors of Noise}
+\footnotetext[4]{Timbre is a rather vague term used by musicians and audio engineers to describe the properties, such as pitch, tone and intensity, of an audio signal's sound that distinguish it from other sounds. The \emph{Oxford Dictionary of English} defines timbre as "the character or quality of a musical sound or voice as distinct from its pitch and intensity".}
 
-The \emph{color} of a noise signal describes, acoustically speaking, the \emph{texture} or \emph{timbre} \footnotemark{} of the sound produced, as well as, scientifically speaking, the spectral power density and frequency content of the signal. The following paragraphs will examine and explain the creation of various noise colors, namely white, pink, red, violet and blue noise.
-
-\footnotetext{Timbre is a rather vague term used by musicians and audio engineers to describe the properties, such as pitch, tone and intensity, of an audio signal's sound that distinguish it from other sounds. The \emph{Oxford Dictionary of English} defines timbre as "the character or quality of a musical sound or voice as distinct from its pitch and intensity".}
-
-\subsubsection{White Noise}
-
-White noise is a random signal in its purest and most un-filtered form. In such a signal, all possible frequencies are found with a uniform probability distribution, meaning they are distributed at equal intensity throughout the signal. The association of noise with colors actually stems from the connection between white noise and white light, which is said to be composed of almost all color components at an approximately equal distribution. Figure \ref{fig:wnoise} shows a typical white noise signal in the time domain, Figure \ref{fig:wnoisez} gives a close-up view of Figure \ref{fig:wnoise}, Figure \ref{fig:wnoisefreq} displays the frequency spectrum of a white noise signal and Table \ref{code:wnoise} shows the implementation of a simple C++ class to produce white noise.
-
-\pagebreak
-
-\begin{figure}[ht!]
+\begin{figure}[p!]
 	\includegraphics[scale=0.62]{img/wnoise}
 	\caption{A typical white noise signal.}
 	\label{fig:wnoise}
 \end{figure}
 
-\begin{figure}[ht!]
+\begin{figure}[p!]
 	\includegraphics[scale=0.5]{img/wnoisez}
 	\caption{A close-up view of Figure \ref{fig:wnoise}. This Figure shows nicely how individual sample values are completely random and independent from each other. }
 	\label{fig:wnoisez}
 \end{figure}
 
-\begin{figure}[ht!]
+\begin{figure}[p!]
   \includegraphics[scale=0.6]{img/wnoisef}
   \caption{The signal from Figures \ref{fig:wnoise} and \ref{fig:wnoisez} in the frequency domain. This frequency spectrum analysis proves the fact that white noise has a "flat" frequency spectrum, meaning that all frequencies are  distributed uniformly and at (approximately) equal intensity. }
   \label{fig:wnoisefreq}
@@ -604,73 +429,3 @@ White noise is a random signal in its purest and most un-filtered form. In such 
   \caption{A simple C++ class to produce white noise. \texttt{rgen\_} is a random number generator following the Mersenne-Twister algorithm, to retrieve uniformly distributed values from the \texttt{dist\_} distribution in the range of -1 to 1. \texttt{tick()} returns a random white noise sample. }
   \label{code:wnoise}
 \end{table}
-
-\pagebreak
-
-\subsubsection{Pink Noise}
-
-Pink noise, sometimes referred to as $\frac{1}{f}$ noise, is white noise filtered with a 3dB/octave low-pass filter. In contrast to white noise, which has equal energy \emph{per frequency component}, pink noise has equal energy \emph{per octave}. This is a significant difference as humans hear on the basis of octaves (logarithmically), and not completely linearly, meaning that for the human ear the difference between 400 and 800 Hertz (one octave) sounds the same as the octave jump between 6 KHz and 11 Khz, even though the absolute difference between thoes two ranges is 4.6 Khz. To address this phenomenon, pink noise has more energy in the lower, narrower octave ranges and less energy in the wider, higher octave ranges. Therefore, the few high intensity values in the low frequency bands add up to equal the sum of lower intensity values in the wider, higher frequency octave bands. Figure \ref{fig:pnoisef} displays the frequency spectrum of pink noise. In the time domain, pink noise looks more or less like white noise, as can be seen in Figure \ref{fig:pnoiset}.
-
-\begin{figure}[t!]
-  \includegraphics[scale=0.6]{img/pnoisef}
-  \caption{The frequency spectrum of pink noise. Note that the filter with which white noise was transformed into pink noise, discussed in a later chapter, is not perfect, resulting in the increase in frequency intensity towards the end of the spectrum. Ideally, the intensity should decrease linearly.}
-  \label{fig:pnoisef}
-\end{figure}
-
-\begin{figure}[t!]
-  \includegraphics[scale=0.7]{img/pnoiset}
-  \caption{Pink noise in the time domain.}
-  \label{fig:pnoiset}
-\end{figure}
-
-\pagebreak
-
-\subsubsection{Red Noise}
-
-Red Noise has an energy decrease of 6dB/Octave. Another method of generating red noise besides filtering white noise appropriately is integrating a white noise signal, as shown in Equation \ref{eq:rnoise}. Red noise is also called "Brown" or "Brownian" noise. This name is not given for its visual equivalent, but rather for it's resemblance to a signal produced by Brownian motion or "Random Walk", "the erratic random movement of microscopic particles in a fluid, as a result of continuous bombardment from molecules of the surrounding medium." (Oxford Dictionary of English, 2003). Figure \ref{fig:rnoisef} shows a red noise signal in the frequency domain and Figure \ref{fig:rnoiset} in the time domain.
-
-\begin{equation}
-  N_{red}(t) = \int_{0}^{t} N_{white}(t)dt
-  \label{eq:rnoise}
-\end{equation}
-
-\begin{figure}[t!]
-  \includegraphics[scale=0.6]{img/rnoisef}
-  \caption{Red noise in the frequency domain.}
-  \label{fig:rnoisef}
-\end{figure}
-
-\begin{figure}[t!]
-  \includegraphics[scale=0.7]{img/rnoiset}
-  \caption{Red noise in the time domain.}
-  \label{fig:rnoiset}
-\end{figure}
-
-\pagebreak
-
-\subsubsection{Blue Noise}
-
-Wherease pink and red noise show a decrease in intensity per frequency component, blue noise exhibits an \textbf{increase} in intensity by 3dB/Octave, making it sound like a high-pitched version of white noise. Blue noise can be created by making the filter used for pink noise a high-pass filter instead of a low-pass one, meaning that higher frequencies are filtered less than lower ones. Figure \ref{fig:bnoisef} shows a frequency spectrum of the blue noise created for the purpose of this thesis. The reader may question as to why the spectrum shown looks nothing like what was just described as the ideal spectrum of blue noise. As matter of fact, it was discovered that a frequency spectrum of this kind, combined with a decreased gain of -3dB, produces the same sound as an ideal blue noise signal.
-
-\begin{figure}[hb!]
-  \includegraphics[scale=0.6]{img/bnoisef}
-  \caption{Blue noise in the frequency domain.}
-  \label{fig:bnoisef}
-\end{figure}
-
-\pagebreak
-
-\subsubsection{Violet Noise}
-
-What blue noise is to pink noise, violet noise is to red noise. Violet noise increases by 6dB per octave and can also be created by differentiating a white noise signal, just as red noise is the result of integrating white noise. Acoustically, violet noise sounds like a very high-pitched "hissing" sound. Equation \ref{eq:vnoise} shows how violet noise can be produced as a derivative of white noise and Figure \ref{fig:vnoisef} shows the frequency response of a violet noise signal.
-
-\begin{equation}
-  N_{violet} = \frac{dN_{white}(t)}{dt}
-  \label{eq:vnoise}
-\end{equation}
-
-\begin{figure}
-  \includegraphics[scale=0.6]{img/vnoisef}
-  \caption{The frequency spectrum of a violet noise signal.}
-  \label{fig:vnoisef}
-\end{figure}
