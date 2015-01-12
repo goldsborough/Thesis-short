@@ -108,45 +108,6 @@ A Low Frequency Oscillator, abbreviated "LFO", is an oscillator operating at ver
   \label{fig:osc-derived}
 \end{figure}
 
-\subsection{LFO Sequences}
-
-A common sight in many modern digital synthesizers, such as Native Instruments'\footnotemark{} "Massive" synthesizer, is a form of step-sequencer for Low Frequency Oscillators. This modulation unit is essentially a synthesis between the concept of an Envelope and that of an LFO. It has a variable number of segments of fixed length, each with their own LFO to change the waveform of the segment. Figure \ref{fig:lfoseq} displays what Native Instruments calls a "Stepper".
-
-\footnotetext{"Native Instruments is a technology company that develops software and hardware for music production and DJ-ing", based out of Berlin, Germany. Source: \emph{Wikpedia:} \url{http://en.wikipedia.org/wiki/Native_Instruments}. Homepage: \url{http://www.native-instruments.com/en/}}
-
-\begin{figure}
-  \includegraphics[scale=0.6]{img/lfoseq}
-  \caption{An LFO sequence, here named a "Stepper". Source: \protect\url{http://www.askaudiomag.com/articles/massives-performer-and-stepper-lfos}}
-  \label{fig:lfoseq}
-\end{figure}
-
-For the purpose of this thesis, such an LFO sequence was created. Regarding the implementation in C++, there is little difference between an LFO Sequence and an Envelope Segment Sequence, except for the fact that now each individual segment has an LFO that can be accessed through the interface of the class to change the parameters or the waveform of each LFO. One of the two parameters that deserves to be discussed, however, is the frequency or "rate" of such an LFO sequence. Just like the frequency of an oscillator describes the number of cycles its waveform completes every second, the rate of an LFO Sequence determines how often the entire sequence is traversed in one second. Practically speaking, this involves adjusting the length of individual segments in such a way that the combined length equals the wanted duration. To give an example: if the user wishes to change the rate of an LFO Sequence with 10 segments to 1 Hz, each individual segment must have a duration of 0.1 seconds (100 milliseconds), so that at the end of the sequence, exactly $10 \text{ segments} \cdot 0.1 \text{ seconds} = 1 \text{ second}$ will have passed. The length of a single segment can be derived from Equation \ref{eq:lfoseq1}, where $r$ is the rate of the LFO Sequence and $N$ the number of segments in the sequence.
-
-\begin{equation}
-  l_{seg} = \frac{1}{r \cdot N}
-  \label{eq:lfoseq1}
-\end{equation}
-
-\noindent The second parameter worthy of mentioning is the frequency of individual segments' modulation LFOs. As mentioned, the frequency of an oscillator or of an LFO sets the cycles per second of their waveform. However, when the length of a single segment in an LFO sequence is only very small, e.g. 100 milliseconds, having an LFO modulate the segment at a common frequency of, say, 1 Hz, would mean that only one tenth of the LFO's period is completed. To have the LFO complete a full cycle, the user would have to adjust the frequency of the LFO in such a way that it can complete one period within the duration of the segment (in this case, 10 Hz). This may still seem like a manageable task for the user. However, once parameter values become a little more complicated, giving birth to cases where the user has to figure out that to have 5 cycles in a segment with a duration of 0.4 seconds, the frequency needs to be exactly 12.5 Hz, the objective reader must admit that this is not intuitive behaviour. Therefore, it was decided that for modulation LFOs in LFO sequences, the rate should not be defined as cycles per second, but as cycles per \emph{segment}. This means that setting the rate of a segment's LFO to 5 Hertz results in 5 cycles per second regardless of the segment's duration. Naturally, the task of calculating the correct frequency for the LFO still has to be performed by the computer program. The real frequency can be calculated using Equation \ref{eq:lfoseq2} when the duration $d$ is in seconds and Equation \ref{eq:lfoseq3} when the duration is in samples, as is the case for a digital synthesizer. In both Equations $f_{displayed}$ stands for the frequency the user specifies, the cycles per segment, and $f_{real}$ for the actual frequency in cycles per second. In Equation \ref{eq:lfoseq3}, $f_{s}$ denotes the sample rate. Table \ref{code:lfoseq} shows how the calculation of the two parameters just dicussed is implemented in the \texttt{LFOSeq} class.
-
-\begin{equation}
-  f_{real} = \frac{f_{displayed}}{d}
-  \label{eq:lfoseq2}
-\end{equation}
-
-\begin{equation}
-  f_{real} = \frac{f_{s}}{d} \cdot f_{displayed}
-  \label{eq:lfoseq3}
-\end{equation}
-
-\begin{table}[p!]
-  \code{lfoseq.cpp}
-  \caption{Relevant member functions from the \texttt{LFOSeq} class for calculating the correct rate for individual segments as well as for the entire sequence.}
-  \label{code:lfoseq}
-\end{table}
-
-\pagebreak
-
 \section{The ModDock system}
 
 The majority of digital synthesizers, such as Propellerhead's\footnotemark{} \emph{Thor} or Native Instruments'\footnotemark[2] \emph{FM8} synthesizer, implement modulation in a static way. Instead of making it possible to use an LFO or an Envelope to modulate any parameter in a synthesis system, units, e.g. an oscillator, have dedicated LFOs and Envelopes, which modulate only one parameter --- mostly amplitude --- and only for this unit. On the other hand, some synthesizers like \emph{Massive}, also created by Native Instruments, implement a system where LFOs and Envelopes can be used by a variable number of units, for a variable number of parameters. For this thesis and the synthesizer created for it, such a system, here called the "ModDock" system, was emulated. The following sections will outline the process of defining and implementing the ModDock system.
