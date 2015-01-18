@@ -1,6 +1,6 @@
 % Developing a digital synthesizer in C++
 
-\documentclass[12pt,twoside]{report}
+\documentclass[12pt,twoside,draft]{report}
 
 \usepackage[american]{babel}
 
@@ -78,8 +78,7 @@ commentstyle=\color{customgray}\ttfamily,
 morecomment=[l][\color{red}]{\#}
 }
 
-% Macro for source code inclusion. Moves to main
-% directory then takes the further path as argument
+% Macro for source code inclusion
 \newcommand{\code}[2][1]{\lstinputlisting[firstnumber=#1]{code/#2}}
 
 \newcommand{\citebs}[1]{(Mitchell, 2008, p. #1)}
@@ -97,13 +96,13 @@ morecomment=[l][\color{red}]{\#}
 \noindent\ignorespaces}{
 \par\medskip}
 
-\input{chapters/title.tex}
+%\input{chapters/title.tex}
 
-\input{chapters/abstract.tex}
+%\input{chapters/abstract.tex}
 
-\input{chapters/acknowledgements.tex}
+%\input{chapters/acknowledgements.tex}
 
-\tableofcontents
+%\tableofcontents
 
 \input{chapters/introduction.tex}
 
@@ -113,20 +112,16 @@ morecomment=[l][\color{red}]{\#}
 
 \input{chapters/chapter3.tex}
 
-\input{chapters/chapter5.tex}
-
-\input{chapters/chapter7.tex}
-
-\input{chapters/chapter8.tex}
+\input{chapters/chapter4.tex}
 
 \input{chapters/conclusion.tex}
 
-\input{chapters/appendix.tex}
+%\input{chapters/appendix.tex}
 
-\input{chapters/bibliography.tex}
+%\input{chapters/bibliography.tex}
 
-\listoffigures
+%\listoffigures
 
-\input{chapters/declaration.tex}
+%\input{chapters/declaration.tex}
 
 \end{document}
