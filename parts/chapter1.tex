@@ -16,7 +16,7 @@ Our everyday experience of sound is an entirely analog one. When a physical     
 
 \pagebreak
 
-\noindent While continuous signals and the idea of an infinite, uncountable set of values are easy to model in mathematics and physics --- the analog world, computers --- in the digital world --- effectively have no means by which to represent something that is infinite, since computer memory is a finite resource. Therefore, signals in the digital domain are discrete, meaning they are composed of periodic \emph{samples}. A sample is a discrete recording of a continuous signal's amplitude, taken in a constant time interval. The process by which a continuous signal is converted to a discrete signal is called \emph{quantization}, \emph{digitization} or simply \emph{analog-to-digital-conversion} \citedsp{35-36}. Quantization essentially converts an analog function of amplitude to a digital function of location in computer memory over time (Burk, Polansky, Repetto, Roberts and Rockmore, 2011, Section 2.1). The reverse process of converting discrete samples to a continuous signal is called \emph{digital-to-analog-conversion}. Figure \ref{fig:disc} shows the discrete representation of a sine wave, the same signal that was previously shown as a continuous signal in Figure \ref{fig:cont}. \citebs{16-17}
+While continuous signals and the idea of an infinite, uncountable set of values are easy to model in mathematics and physics --- the analog world, computers --- in the digital world --- effectively have no means by which to represent something that is infinite, since computer memory is a finite resource. Therefore, signals in the digital domain are discrete, meaning they are composed of periodic \emph{samples}. A sample is a discrete recording of a continuous signal's amplitude, taken in a constant time interval. The process by which a continuous signal is converted to a discrete signal is called \emph{quantization}, \emph{digitization} or simply \emph{analog-to-digital-conversion} \citedsp{35-36}. Quantization essentially converts an analog function of amplitude to a digital function of location in computer memory over time (Burk, Polansky, Repetto, Roberts and Rockmore, 2011, Section 2.1). The reverse process of converting discrete samples to a continuous signal is called \emph{digital-to-analog-conversion}. Figure \ref{fig:disc} shows the discrete representation of a sine wave, the same signal that was previously shown as a continuous signal in Figure \ref{fig:cont}. \citebs{16-17}
 
 \begin{figure}[h!]
 
@@ -30,7 +30,7 @@ Our everyday experience of sound is an entirely analog one. When a physical     
 
 \end{figure}
 
-\section{Sample Rate}
+\subsubsection{Sample Rate}
 
 The sample rate (often referred to as sampling rate or sampling frequency), commonly denoted by $f_{s}$, is the rate at which samples of a continuous signal are taken to quantize it. The value of the sample rate is measured in Hertz (Hz) or samples per second. Common values for audio sampling rates are 44.1 kHz, a frequency originally chosen by Sony in 1979 that is still used for Compact Discs, and 48 kHz, the standard audio sampling rate used today. \citebs{18} (Colletti, 2013) The reciprocal of the sample rate yields the sampling interval, denoted by $T_{s}$ and measured in seconds, which is the time period after which a single sample is taken from a continuous signal:
 
@@ -44,13 +44,13 @@ The sample rate (often referred to as sampling rate or sampling frequency), comm
   f_{s} = \frac{1}{T_{s}}
 \end{equation}
 
-\section{Nyquist Limit}
+\subsubsection{Nyquist Limit}
 
 The sample rate also determines the range of frequencies that can be represented by a digital sound system. The reason for this is that only frequencies that are less than or equal to one half of the sampling rate can be "properly sampled". To sample a signal "properly" means to be able to reconstruct a continuous signal, given a set of discrete samples, exactly, i.e. without any \emph{quantization errors}. This is only possible if the frequency of a signal allows at least one sample per cycle to be taken above the equilibrium and at least one sample below. The value of one half of the sample rate is called the \emph{Nyquist frequency} or \emph{Nyquist limit}, named after Harry Nyquist, who first described the Nyquist limit and associated phenomena together with Claude Shannon in the 1940s, stating that "a continuous signal can be properly sampled, only if it does not contain frequency components above one half the sampling rate". Any frequencies above the Nyquist limit lead to \emph{aliasing}, which is discussed in the next section. \citedsp{40}
 
 Given the definition of the Nyquist limit and considering the fact that the limit of human hearing is approximately 20 kHz (Cutnell \& Johnson, 1998, p. 466), the reason for which the two most common audio sample rates are 40 kHz and above is clear: they were chosen to allow the "proper" representation of the entire range of frequencies audible to humans, since a sample rate of 40 kHz or higher meets the Nyquist requirement of a sample rate at least twice the maximum frequency component of the signal to be sampled (the Nyquist limit), in this case ca. 20 Khz.
 
-\section{Aliasing}
+\subsubsection{Aliasing}
 
 When a signal's frequency exceeds the Nyquist limit, it is said to produce an \emph{alias}, a new signal with a different frequency that is indistinguishable from the original signal when sampled. This is due to the fact that a signal with a frequency component above the Nyquist limit no longer has one sample taken above and one below the zero level for each cycle, but at arbitrary points of the original signal. When these points are connected, they yield an entirely different signal. For example, if the sinusoid depicted in Figure \ref{fig:orig}, with a frequency of 4 Hz, is sampled at a sample rate of 5 Hertz, shown in Figure \ref{fig:sampled}, meaning the frequency of the continuous signal is higher than the Nyquist limit (here 2.5 Hz), the reconstructed signal, approximated in Figure \ref{fig:approx}, will look completely different from the original sinusoid. "This phenomenon of [signals] changing frequency during sampling is called aliasing, [...] an example of improper sampling". \citedsp{40}
 

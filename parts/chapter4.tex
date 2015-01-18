@@ -2,9 +2,9 @@
 
 The most important feature of a synthesizer is its capability to synthesize sound. Synthesizing sound means to combine two or more (audio) signals to produce a new signal. The many possibilities to synthesize sound waves with variable parameters enable musicians to create an uncountable number of different sounds. A synthesizer can be configured to resemble natural sounds such as that of wind or water waves, can emulate other instruments like pianos, guitars or bass drums and, finally, a synthesizer can also be used to produce entirely new, electronic sounds. However, not all synthesis methods available to the creator of a digital synthesizer are equally suited to the various possible sounds just described. Common methods of synthesis are Additive Synthesis, Granular Synthesis, Amplitude Modulation Synthesis and Frequency Modulation Synthesis. This chapter aims to examine and describe the latter.
 
-\section{Frequency Modulation Synthesis}
+\subsubsection{Frequency Modulation Synthesis}
 
-In Frequency Modulation (FM) Synthesis, one signal, termed the "modulator", is used to modulate the frequency of another signal --- the "carrier". This produces very complex changes in the carrier's frequency spectrum and introduces a theoretically infinite set of side-bands, which contribute to the characteristic sound and timbre of FM Synthesis. The fact that Frequency Modulation can be used to synthesize audio signals was first discovered by John Chowning, who he described the mathematical principles and practical implications of FM Synthesis in his 1973 paper "The Synthesis of Complex Audio Spectra by Means of Frequency Modulation". In 1974 his employer, Stanford University, licensed his invention to the Yamaha Corporation, a Japanese technology firm, which went on to create the first FM synthesizers, including the very popular DX-7 model. Many digital FM synthesizers, such as Native Instrument's \emph{FM8}, try to emulate the DX-7. (Electronic Music Wiki, \url{http://electronicmusic.wikia.com/wiki/DX7}, accessed 4 January 2015) Equation \ref{eq:fm} gives a full mathematical definition for Frequency Modulation (Synthesis). What Equation \ref{eq:fm} shows is that FM Synthesis works by summing the carrier's instantaneous frequency $\omega_{c}$, the carrier signal being $c(t)$, with the output of the modulator signal $m(t)$, thereby varying the carrier frequency periodically. The degree of frequency variation $\Delta f_{c}$ depends on the modulator's amplitude $A_{m}$. Therefore, $\Delta f_{c} = A_{m}$. Figure \ref{fig:fmlow} shows how frequency modulation effects a signal. Note that this Figure should only show how FM works. It is not a realistic example of FM \emph{Synthesis}, as the modulator frequency is not in the audible range.
+In Frequency Modulation (FM) Synthesis, one signal, termed the "modulator", is used to modulate the frequency of another signal --- the "carrier". This produces very complex changes in the carrier's frequency spectrum and introduces a theoretically infinite set of side-bands, which contribute to the characteristic sound and timbre of FM Synthesis. The fact that Frequency Modulation can be used to synthesize audio signals was first discovered by John Chowning, who described the mathematical principles and practical implications of FM Synthesis in his 1973 paper "The Synthesis of Complex Audio Spectra by Means of Frequency Modulation". In 1974 his employer, Stanford University, licensed his invention to the Yamaha Corporation, a Japanese technology firm, which went on to create the first FM synthesizers, including the very popular \emph{DX-7} model. Many digital FM synthesizers, such as Native Instrument's \emph{FM8}, try to emulate the \emph{DX-7}. (Electronic Music Wiki, \url{http://electronicmusic.wikia.com/wiki/DX7}, accessed 4 January 2015) Equation \ref{eq:fm} gives a full mathematical definition for Frequency Modulation (Synthesis). What Equation \ref{eq:fm} shows is that FM Synthesis works by summing the carrier's instantaneous frequency $\omega_{c}$, the carrier signal being $c(t)$, with the output of the modulator signal $m(t)$, thereby varying the carrier frequency periodically. The degree of frequency variation $\Delta f_{c}$ depends on the modulator's amplitude $A_{m}$. Therefore, $\Delta f_{c} = A_{m}$. Figure \ref{fig:fmlow} shows how frequency modulation effects a signal. Note that this Figure should only show how FM works. It is not a realistic example of FM \emph{Synthesis}, as the modulator frequency is not in the audible range.
 
 \pagebreak
 
@@ -28,11 +28,11 @@ In Frequency Modulation (FM) Synthesis, one signal, termed the "modulator", is u
     \label{eq:fm}
   \end{equation}
 
-  \section{Sidebands}
+  \subsubsection{Sidebands}
 
   One of the most noticeable effects of FM Synthesis is that it adds \emph{sidebands} to a carrier signal's frequency spectrum. Sidebands are frequency components higher or lower than the carrier frequency, whose spectral position, amplitude as well as relative spacing depends on two factors: the ratio between the carrier and modulator frequency, referred to as the "C:M ratio", and the index of modulation $\beta$, which in turn depends on the modulator signal's amplitude and frequency.
 
-  \section{C:M Ratio}
+  \subsubsection{C:M Ratio}
 
   The spacing and positions of sidebands on the carrier signal's frequency spectrum depends on the ratio between the frequency of the carrier signal, $C$, and that of the modulator, $M$. This $C:M$ ratio gives insight into a variety of properties of a frequency-modulated sound. Most importantly, when the $C:M$ ratio is known, Equation \ref{eq:sbcm} gives all the relative frequency values of the theoretically infinite set of sidebands. Equation \ref{eq:sbabs} describes how to calculate $\omega_{sb_{n}}$, the angular frequency of the $n$-th sideband, absolutely. What these equations show is that for any given $C:M$ ratio, the sidebands are found at relative frequencies $C + M, C + 2M, C + 3M, ... $ and absolute frequencies %
   $\omega_{c} + \omega_{m}, \omega_{c} + 2 \omega_{m},\omega_{c} + 3 \omega_{m}, ...$ Hertz.
@@ -65,7 +65,7 @@ In Frequency Modulation (FM) Synthesis, one signal, termed the "modulator", is u
 
   \pagebreak
 
-  \section{Index of Modulation}
+  \subsubsection{Index of Modulation}
 
   Theoretically, Frequency Modulation Synthesis produces an infinite number of sidebands. However, sidebands reach inaudible levels very quickly, making the series practically finite. In general, the amplitude of individual sidebands depends on the "index of modulation" and the Bessel Function values that result from it. A definition for the index of modulation, denoted by $\beta$, is given in Equation \ref{eq:beta1}. Because the variation in carrier frequency, $\Delta f_{c}$, depends directly on the amplitude of the modulator, Equation \ref{eq:beta1} can be re-written as Equation \ref{eq:beta2}.
 
@@ -125,7 +125,7 @@ In Frequency Modulation (FM) Synthesis, one signal, termed the "modulator", is u
 
   \end{table}
 
-  \section{Bandwidth}
+  \subsubsection{Bandwidth}
 
   The bandwidth of a signal describes the range of frequencies that signal occupies on the frequency spectrum. The bandwidth of a frequency-modulated signal is theoretically infinite. However, it was already shown that the amplitude values of a carrier's sidebands quickly become inaudible and thus negligible. A rule of thumb for calculating the bandwidth $B$ of an FM signal is the so-called "Carson Bandwidth Rule", given in Equation \ref{eq:bw}.
 
@@ -134,9 +134,9 @@ In Frequency Modulation (FM) Synthesis, one signal, termed the "modulator", is u
     \label{eq:bw}
   \end{equation}
 
-  \section{Algorithms and Operators}
+  \subsubsection{Algorithms and Operators}
 
-  When speaking of FM Synthesis, it is common to refer to oscillators as "operators". This naming convention stems from the Yamaha DX-7 series. So far, FM Synthesis was only discussed for two operators, a carrier and a modulator. However, it is entirely possible to perform FM Synthesis with more than two operators, by modulating any number of operators either in series, or in parallel. When three operators $A$, $B$ and $C$ are connected in series, $A$ modulates $B$, which in turn modulates $C$. If $A$ and $B$ are connected in parallel, but in series with $C$, $C$ is first modulated by $A$ and then by $B$. The same result is achieved if the sum of signals $A$ and $B$ is used to modulate $C$. In general, a configuration of operators is referred to as an "algorithm". The number of possible algorithms increases with an increasing number of operators. In the synthesizer created for this thesis, four operators $A$, $B$, $C$ and $D$ are used. The possible algorithms for these four operators are shown in Figure \ref{fig:fmalgs}.
+  When speaking of FM Synthesis, it is common to refer to oscillators as "operators". This naming convention stems from the Yamaha \emph{DX-7} series. So far, FM Synthesis was only discussed for two operators, a carrier and a modulator. However, it is entirely possible to perform FM Synthesis with more than two operators, by modulating any number of operators either in series, or in parallel. When three operators $A$, $B$ and $C$ are connected in series, $A$ modulates $B$, which in turn modulates $C$. If $A$ and $B$ are connected in parallel, but in series with $C$, $C$ is first modulated by $A$ and then by $B$. The same result is achieved if the sum of signals $A$ and $B$ is used to modulate $C$. In general, a configuration of operators is referred to as an "algorithm". The number of possible algorithms increases with an increasing number of operators. In the synthesizer created for this thesis, four operators $A$, $B$, $C$ and $D$ are used. The possible algorithms for these four operators are shown in Figure \ref{fig:fmalgs}.
 
   \begin{figure}[p!]
     \includegraphics[scale=0.75]{img/fmalgs}
@@ -144,7 +144,7 @@ In Frequency Modulation (FM) Synthesis, one signal, termed the "modulator", is u
     \label{fig:fmalgs}
   \end{figure}
 
-  \section{Implementation}
+  \subsubsection{Implementation}
 
   The \texttt{Operator} class implements an FM operator and inherits from the \texttt{Oscillator} class. Its frequency is modulated by adding an offset to its Wavetable index increment, proportional to the frequency variation caused by the modulator. Table \ref{code:operator} shows how this offset is calculated and added to the Wavetable index whenever the Operator is updated. Listing \ref{code:fm} shows how the \texttt{FM} class, which takes pointers to four Operators, implements the various algorithms shown in Figure \ref{fig:fmalgs}.
 

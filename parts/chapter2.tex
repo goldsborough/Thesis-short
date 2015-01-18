@@ -1,8 +1,8 @@
 \chapter{Generating Sound}
 
-The following sections will outline how digital sound can be generated in theory and implemented in practice, using the C++ programming language.
+This chapter will outline how sound waveforms can be generated in theory and implemented in practice, using the C++ programming language. It will also examine how so-called \emph{Wavetables} can be used to efficiently store and process these waveforms in a computer program. Lastly, a very special form of sound --- \emph{Noise} --- will be discussed.
 
-\section{Simple Waveforms}
+\section{Waveforms}
 
 The simplest possible audio waveform is a sine wave. As a function of time, it can be mathematically represented by Equation \ref{eq:sine}, where $A$ is the maximum amplitude of the signal, $f$ the frequency in Hertz and $\phi$ an initial phase offset in radians.
 
@@ -28,7 +28,7 @@ to
 double phase = pi/2.0;
 \end{lstlisting}
 
-\section{Complex Waveforms}
+\subsubsection{Complex Waveforms}
 
 Now that the process of creating simple sine and cosine waves has been discussed, the generation of more complex waveforms can be examined. Generally, there are two methods by which complex waveforms can be created in a digital synthesis system: mathematical calculation and additive synthesis. In the first case --- mathematical calculation, waveforms are computed according to certain mathematical formulae and thus yield \emph{perfect} or \emph{exact} waveforms, such as a square wave that is equal to its maximum amplitude exactly one half of a period and equal to its minimum amplitude for the rest of the period. While these waveforms produce a very crisp and clear sound, they are rarely found in nature due to their degree of perfection and are consequently rather undesirable for a music synthesizer. \vspace{\baselineskip}
 
@@ -134,7 +134,7 @@ The process of generating triangle waves additively differs from previous wavefo
 
 Following the discussion of the creation of complex waveform, the two options for playing back waveforms in a digital synthesis system must be examined: continuous real-time calculation of waveform samples or lookup from a table that has been calculated once and then written to disk --- a so-called Wavetable. To keep matters short, the second method was found to be computationally more efficient and thus the better choice, as memory is a more easily expended resource than computational speed.
 
-\subsection{Implementation}
+\subsubsection{Implementation}
 
 A Wavetable is a table, practically speaking an array, in which pre-calculated waveform amplitude values are stored for lookup. The main benefit of a Wavetable is that individual samples need not be computed periodically and in real-time. Rather, samples can be retrieved simply by dereferencing and subsequently incrementing a Wavetable index. If the Wavetable holds sample values for a one-second period, the frequency of the waveform can be adjusted during playback by multiplying the increment value by some factor other than one. "For example, if [one] increment[s] by two [instead of one], [one can] scan the table in half the time and produce a frequency twice the original frequency. Other increment values will yield proportionate frequencies." \citebs{80-81} The \emph{fundamental increment} of a Wavetable refers to the value by which a table index must be incremented after each sample to traverse a waveform at a frequency of 1 Hz. A formula to calculate the fundamental increment $i_{fund}$ is shown in Equation \ref{eq:fundincr}, where $L$ is the Wavetable length and the $f_{s}$ the sample rate. To alter the frequency $f$ of the played-back waveform, Equation \ref{eq:otherincr} can be used to calculate the appropriate increment value $i$.
 
@@ -148,7 +148,7 @@ A Wavetable is a table, practically speaking an array, in which pre-calculated w
   \label{eq:otherincr}
 \end{equation}
 
-\subsection{Interpolation}
+\subsubsection{Interpolation}
 
 For almost all configurations of frequencies, table lengths and sample rates, the table index $i$ produced by Equation \ref{eq:otherincr} will not be an integer. Since using a floating point number as an index for an array is a syntactically illegal operation in C++, there are two options. The first is to truncate or round the table index to an integer, thus "introducing a quantization error into the signal [...]". \citebs{84} This is a suboptimal solution which would result in a change of phase and consequently distortion.  The second option, interpolation, tries to approximate the true value from the sample at the current index and at the subsequent one. Interpolation is achieved by summation of the sample value at the floored, integral part of the table index, $\left \lfloor{i}\right \rfloor$, with the difference between this sample and the sample value at the next table index, $\left \lfloor {i}\right \rfloor + i$, multiplied by the fractional part of the table index, $i - \left \lfloor {i}\right \rfloor$. Table \ref{code:pseudointerp} displays the calculation of a sample by means of interpolation in pseudo-code and Table \ref{code:interp} in C++. (based on pseudo-code, Mitchell, 2008, p. 85)
 
@@ -164,7 +164,7 @@ For almost all configurations of frequencies, table lengths and sample rates, th
   \label{code:interp}
 \end{table}
 
-\subsection{Table Length}
+\subsubsection{Table Length}
 
 The length of the Wavetable must be chosen carefully and consider both memory efficiency and waveform resolution. An equation to calculate the size of a single wavetable in Kilobytes is given by Equation \ref{eq:tablesize}, where L is the table length and $N$ the number of bytes provided by the resolution of the data type used for samples, e.g. 8 bytes for the double-precision floating-point data type \texttt{double}.
 \begin{equation}
@@ -180,7 +180,23 @@ Daniel R. Mitchell advises that the length of the table be a power of two for ma
   \label{fig:jari}
 \end{figure}
 
-\noindent One important fact to mention, also discussed by Jari Kleimola, is that because the interpolation algorithm from Table \ref{code:interp} must have access to the sample value at index $i+1$, $i$ being the current index, an additional sample must be appended to the Wavetable to avoid a \texttt{BAD\_ACCESS} error when $i$ is at the last valid position in the table. This added sample has the same value as the first sample in the table to avoid a discontinuity. Therefore, the period of the waveform actually only fills 4095 of the 4096 indices of the Wavetable, as the 4096th sample is equal to the first.
+One important fact to mention, also discussed by Jari Kleimola, is that because the interpolation algorithm from Table \ref{code:interp} must have access to the sample value at index $i+1$, $i$ being the current index, an additional sample must be appended to the Wavetable to avoid a \texttt{BAD\_ACCESS} error when $i$ is at the last valid position in the table. This added sample has the same value as the first sample in the table to avoid a discontinuity. Therefore, the period of the waveform actually only fills 4095 of the 4096 indices of the Wavetable, as the 4096th sample is equal to the first.
+
+\subsubsection{File Format}
+
+For maximum efficiency, the Wavetables are not created at program startup but read from a binary file. To prevent the synthesizer program from accidentally reading faulty files, some simple identification string must be added to the file. Therefore, Wavetable files contain a 6-byte ID string equal to the name of the synthesizer, \emph{Anthem}, after which the 32 KB of Wavetable data follow. Additionally, Wavetable files end with a \texttt{.wavetable} file extension. Table \ref{code:wtfile} displays a function to read such a Wavetable file and Figure \ref{fig:wtfile} shows the first few bytes of a Wavetable file when opened as plain-text. The total size of a Wavetable file is exactly 32774 bytes, 32768 bytes (32KB) of Wavetable data and 6 bytes for the ID string.
+
+\begin{table}[t!]
+  \code{file.cpp}
+  \caption{C++ code to read a Wavetable file. }
+  \label{code:wtfile}
+\end{table}
+
+\begin{figure}[h!]
+  \includegraphics[scale=0.7]{img/wtfile}
+  \caption{The first few bytes of a Wavetable file.}
+  \label{fig:wtfile}
+\end{figure}
 
 \section{Noise}
 
