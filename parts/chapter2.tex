@@ -1,44 +1,30 @@
 \chapter{Generating Sound}
 
-This chapter will outline how sound waveforms can be generated in theory and implemented in practice, using the C++ programming language. It will also examine how so-called \emph{Wavetables} can be used to efficiently store and process these waveforms in a computer program. Lastly, a very special form of sound --- \emph{Noise} --- will be discussed.
+This chapter will outline how sound waveforms can be generated in theory and implemented in practice, using the C++ programming language. It will also examine how \emph{Wavetables} can be used to efficiently store and process these waveforms in a computer program. Lastly, a very special form of sound --- \emph{Noise} --- will be discussed.
 
 \section{Waveforms}
 
-The simplest possible audio waveform is a sine wave. As a function of time, it can be mathematically represented by Equation \ref{eq:sine}, where $A$ is the maximum amplitude of the signal, $f$ the frequency in Hertz and $\phi$ an initial phase offset in radians.
+The simplest possible audio waveform is a sine wave. As a function of time, it can be mathematically represented by Equation \ref{eq:sine}, where $A$ is the maximum amplitude of the signal, $f$ the frequency in Hertz and $\phi$ an initial phase offset in radians. For future reference, the value of $2 \pi f$ is called the \emph{angular frequency} and is usually assigned the variable $\omega$. A computer program to compute the values of a sine wave with a variable duration, implemented in C++, is shown in Listing \ref{code:sine}. Another waveform similar to the sine wave is the cosine wave, which differs only in a phase offset of 90\degree or $\frac{\pi}{2}$ radians, as shown in Equation \ref{eq:cosine}. The program from Listing \ref{code:sine} could be modified to compute a cosine wave by changing line 22 from \lstinline{double phase = 0;} to \lstinline{double phase = pi/2.0;}.
 
 \begin{equation}
 f_{s}(t) = A \sin(2 \pi  f t + \phi)
 \label{eq:sine}
 \end{equation}
 
-\noindent A computer program to compute the values of a sine wave with a variable duration, implemented in C++, is shown in Listing \ref{code:sine}. Another waveform similar to the sine wave is the cosine wave, which differs only in a phase offset of 90\degree or $\frac{\pi}{2}$ radians, as shown in Equation \ref{eq:cosine}.
-
 \begin{equation}
-f_{c}(t) = A \cos(2 \pi  f t + \phi) = A \sin(2 \pi f t + \phi + \frac{\pi}{2})
+f_{c}(t) = A \cos(\omega t + \phi) = A \sin(\omega t + \phi + \frac{\pi}{2})
 \label{eq:cosine}
 \end{equation}
 
-\noindent Therefore, the program from Listing \ref{code:sine} could be modified to compute a cosine wave by changing line 22 from:
-
-\begin{lstlisting}[firstnumber=22]
-double phase = 0;
-\end{lstlisting}
-to
-\begin{lstlisting}[firstnumber=22]
-double phase = pi/2.0;
-\end{lstlisting}
-
 \subsubsection{Complex Waveforms}
 
-Now that the process of creating simple sine and cosine waves has been discussed, the generation of more complex waveforms can be examined. Generally, there are two methods by which complex waveforms can be created in a digital synthesis system: mathematical calculation and additive synthesis. In the first case --- mathematical calculation, waveforms are computed according to certain mathematical formulae and thus yield \emph{perfect} or \emph{exact} waveforms, such as a square wave that is equal to its maximum amplitude exactly one half of a period and equal to its minimum amplitude for the rest of the period. While these waveforms produce a very crisp and clear sound, they are rarely found in nature due to their degree of perfection and are consequently rather undesirable for a music synthesizer. \vspace{\baselineskip}
+Now that the process of creating simple sine and cosine waves has been discussed, the generation of more complex waveforms can be examined. Generally, there are two methods by which complex waveforms can be created in a digital synthesis system: mathematical calculation or Additive Synthesis. In the first case --- mathematical calculation, waveforms are computed according to certain mathematical formulae and thus yield \emph{perfect} or \emph{exact} waveforms, such as a square wave that is equal to its maximum amplitude exactly one half of a period and equal to its minimum amplitude for the rest of the period. While these waveforms produce a very crisp and clear sound, they are rarely found in nature due to their degree of perfection and are consequently rather undesirable for a music synthesizer. \parbreak
 
-The second method of generating complex waveforms, additive synthesis, produces waveforms that, despite not being mathematically perfect, are closer to the waveforms found naturally. This method involves the summation of a theoretically infinite, practically finite set of sine and cosine waves with varying parameters. Additive synthesis is often called Fourier Synthesis, after the 18th century French scientist, Joseph Fourier, who first described the process and associated phenomena of summing sine and cosine waves to produce complex waveforms. This calculation of a complex, periodic waveform from a sum of sine and cosine functions is also referred to as a Fourier Transform or a Fourier Series, both part of the Fourier Theorem. In a Fourier Series, a single sine or cosine component is either called a harmonic, an overtone or a partial. All three name the same idea of a waveform with a frequency that is an \emph{integer multiple} of some fundamental pitch or frequency. \citebs{64} Throughout this thesis the term \emph{partial} will be preferred.
-
-Equation 2.13 gives the general definition of a discrete Fourier Transform and Equation 2.14 shows a simplified version of Equation 2.13. Table \ref{code:partial} presents a C++ struct to represent a single partial and Listing \ref{code:add} a piece of C++ code to compute one period of any Fourier Series.
+The second method of generating complex waveforms --- Additive Synthesis --- produces waveforms that, despite not being mathematically perfect, are closer to the waveforms found naturally. This method involves the summation of a theoretically infinite, practically finite set of sine and cosine waves with varying parameters. Additive Synthesis is often called Fourier Synthesis, after the 18th century French scientist, Joseph Fourier, who first described the process and associated phenomena of summing sine and cosine waves to produce complex waveforms. This calculation of a complex, periodic waveform from a sum of sine and cosine functions is also referred to as a Fourier Transform or a Fourier Series, both part of the Fourier Theorem. In a Fourier Series, a single sine or cosine component is either called a harmonic, an overtone or a partial. All three name the same idea of a waveform with a frequency that is an \emph{integer multiple} of some fundamental pitch. \citebs{64} Throughout this thesis the term \emph{partial} will be preferred. Equation 2.13 gives the general definition of a discrete Fourier Transform and Equation 2.14 shows a simplified version of Equation 2.13. Table \ref{code:partial} presents a C++ struct to represent a single partial and Listing \ref{code:add} a piece of C++ code to compute one period of any Fourier Series.
 
 \begin{figure}[h!]
   $f(t) = \frac{a_{0}}{2} + \sum\limits_{n=1}^\infty (a_{n} \cos(\omega n t) + b_{n} \sin(\omega n t))$
-  \caption*{\textbf{Equation 2.13: }Formula to calculate an infinite Fourier series, where $\frac{a_{n}}{2}$ is the center amplitude, $a_{n}$ and $b_{n}$ the partial amplitudes and $\omega$ the angular frequency, which is equal to $2 \pi f$.}
+  \caption*{\textbf{Equation 2.13: }Formula to calculate an infinite Fourier series, where $\frac{a_{n}}{2}$ is the center amplitude, $a_{n}$ and $b_{n}$ the partial amplitudes and $\omega$ the angular frequency.}
   \label{fig:fourier1}
 \end{figure}
 
@@ -48,13 +34,13 @@ Equation 2.13 gives the general definition of a discrete Fourier Transform and E
   \label{fig:fourier2}
 \end{figure}
 
-\begin{table}
+\begin{table}[h!]
   \code{partial.cpp}
   \caption{C++ code to represent a single partial in a Fourier Series.}
   \label{code:partial}
 \end{table}
 
-The following paragraphs will analyze how three of the most common waveforms found in digital synthesizers --- the square, the sawtooth and the triangle wave --- can be generated via additive synthesis.
+The following paragraphs will analyze how three of the most common waveforms found in digital synthesizers --- the square, the sawtooth and the triangle wave --- can be generated via Additive Synthesis.
 
 \subsubsection{Square Waves}
 
@@ -65,20 +51,6 @@ When speaking of additive synthesis, a square wave is the result of summing all 
   \label{eq:asquare}
 \end{equation}
 
-\begin{figure}[p!]
-  \includegraphics[scale=0.2]{img/square}
-  \caption{Square waves with 2, 4, 8, 16, 32 and 64 partials.}
-  \label{fig:square}
-\end{figure}
-
-\begin{table}[p!]
-  \code{asquare.cpp}
-  \caption{C++ code for a square wave with 64 partials.}
-  \label{code:asquare}
-\end{table}
-
-\pagebreak
-
 \subsubsection{Sawtooth Waves}
 
 A sawtooth wave is slightly simpler to create through additive synthesis, as it requires the summation of every partial rather than only the odd-numbered ones. The respective amplitude is again the reciprocal of the partial number. Equation \ref{eq:asaw} gives a mathematical definition for a sawtooth wave, Figure \ref{fig:saw} displays sawtooth functions with various partial numbers and Table \ref{code:asaw} shows C++ code to generate such functions.
@@ -87,20 +59,6 @@ A sawtooth wave is slightly simpler to create through additive synthesis, as it 
   f(t) = \sum\limits_{n=1}^N \frac{1}{n} \sin(\omega n t)
   \label{eq:asaw}
 \end{equation}
-
-\begin{figure}
-  \includegraphics[scale=0.2]{img/saw}
-  \caption{Sawtooth waves with 2, 4, 8, 16, 32 and 64 partials.}
-  \label{fig:saw}
-\end{figure}
-
-\begin{table}
-  \code{asaw.cpp}
-  \caption{C++ code for a sawtooth wave with 64 partials.}
-  \label{code:asaw}
-\end{table}
-
-\pagebreak
 
 \subsubsection{Triangle Waves}
 
@@ -116,13 +74,43 @@ The process of generating triangle waves additively differs from previous wavefo
   \label{eq:atri2}
 \end{equation}
 
-\begin{figure}
-  \includegraphics[scale=0.2]{img/tri}
+\pagebreak
+
+\begin{figure}[h!]
+  \includegraphics[scale=0.275]{img/square}
+  \caption{Square waves with 2, 4, 8, 16, 32 and 64 partials.}
+  \label{fig:square}
+\end{figure}
+
+\begin{table}[h!]
+  \code{asquare.cpp}
+  \caption{C++ code for a square wave with 64 partials.}
+  \label{code:asquare}
+\end{table}
+
+\pagebreak
+
+\begin{figure}[h!]
+  \includegraphics[scale=0.275]{img/saw}
+  \caption{Sawtooth waves with 2, 4, 8, 16, 32 and 64 partials.}
+  \label{fig:saw}
+\end{figure}
+
+\begin{table}[h!]
+  \code{asaw.cpp}
+  \caption{C++ code for a sawtooth wave with 64 partials.}
+  \label{code:asaw}
+\end{table}
+
+\pagebreak
+
+\begin{figure}[h!]
+  \includegraphics[scale=0.275]{img/tri}
   \caption{Triangle waves with 2, 4, 8, 16, 32 and 64 partials. Note that already 2 partials produce a very good approximation of a triangle wave.}
   \label{fig:tri}
 \end{figure}
 
-\begin{table}
+\begin{table}[h!]
   \code{atri.cpp}
   \caption{C++ code for a triangle wave with 64 partials.}
   \label{code:atri}
@@ -132,11 +120,15 @@ The process of generating triangle waves additively differs from previous wavefo
 
 \section{Wavetables}
 
-Following the discussion of the creation of complex waveform, the two options for playing back waveforms in a digital synthesis system must be examined: continuous real-time calculation of waveform samples or lookup from a table that has been calculated once and then written to disk --- a so-called Wavetable. To keep matters short, the second method was found to be computationally more efficient and thus the better choice, as memory is a more easily expended resource than computational speed.
+Following the discussion of the creation of complex waveform, the two options for playing back waveforms in a digital synthesis system must be examined: continuous real-time calculation of waveform samples or lookup from a table that is calculated once and then written into memory --- a \emph{Wavetable}. To keep matters short, the second method was found to be computationally more efficient and thus the better choice, as memory is a more easily expended resource than computational speed.
 
 \subsubsection{Implementation}
 
-A Wavetable is a table, practically speaking an array, in which pre-calculated waveform amplitude values are stored for lookup. The main benefit of a Wavetable is that individual samples need not be computed periodically and in real-time. Rather, samples can be retrieved simply by dereferencing and subsequently incrementing a Wavetable index. If the Wavetable holds sample values for a one-second period, the frequency of the waveform can be adjusted during playback by multiplying the increment value by some factor other than one. "For example, if [one] increment[s] by two [instead of one], [one can] scan the table in half the time and produce a frequency twice the original frequency. Other increment values will yield proportionate frequencies." \citebs{80-81} The \emph{fundamental increment} of a Wavetable refers to the value by which a table index must be incremented after each sample to traverse a waveform at a frequency of 1 Hz. A formula to calculate the fundamental increment $i_{fund}$ is shown in Equation \ref{eq:fundincr}, where $L$ is the Wavetable length and the $f_{s}$ the sample rate. To alter the frequency $f$ of the played-back waveform, Equation \ref{eq:otherincr} can be used to calculate the appropriate increment value $i$.
+A Wavetable is a table, practically speaking an array, in which pre-calculated waveform amplitude values are stored for lookup. The main benefit of a Wavetable is that individual samples need not be computed periodically and in real-time. Rather, samples can be retrieved simply by dereferencing and subsequently incrementing a Wavetable index. If the Wavetable holds sample values for a one-second period, the frequency of the waveform can be adjusted during playback by multiplying the increment value by some factor other than one.
+\begin{blockquote}
+  "For example, if [one] increment[s] by two [instead of one], [one can] scan the table in half the time and produce a frequency twice the original frequency. Other increment values will yield proportionate frequencies." \citebs{80-81}
+\end{blockquote}
+The \emph{fundamental increment} of a Wavetable refers to the value by which a table index must be incremented after each sample to traverse a waveform at a frequency of 1 Hz. A formula to calculate the fundamental increment $i_{fund}$ is shown in Equation \ref{eq:fundincr}, where $L$ is the Wavetable length and the $f_{s}$ the sample rate. To alter the frequency $f$ of the played-back waveform, Equation \ref{eq:otherincr} can be used to calculate the appropriate increment value $i$.
 
 \begin{equation}
   i_{fund} = \frac{L}{f_{s}}
@@ -166,19 +158,21 @@ For almost all configurations of frequencies, table lengths and sample rates, th
 
 \subsubsection{Table Length}
 
-The length of the Wavetable must be chosen carefully and consider both memory efficiency and waveform resolution. An equation to calculate the size of a single wavetable in Kilobytes is given by Equation \ref{eq:tablesize}, where L is the table length and $N$ the number of bytes provided by the resolution of the data type used for samples, e.g. 8 bytes for the double-precision floating-point data type \texttt{double}.
+The length of the Wavetable must be chosen carefully and should consider both memory efficiency and waveform resolution. An equation to calculate the size of a single wavetable in Kilobytes is given by Equation \ref{eq:tablesize}, where L is the table length and $N$ the number of bytes provided by the resolution of the data type used for samples, e.g. 8 bytes for the double-precision floating-point data type \texttt{double}.
 \begin{equation}
   Size = \frac{L \cdot N}{1024}
   \label{eq:tablesize}
 \end{equation}
 
-Daniel R. Mitchell advises that the length of the table be a power of two for maximum efficiency. \citebs{86} Moreover, during an E-Mail exchange with Jari Kleimola, author of the 2005 master's thesis "Design and Implementation of a Software Sound Synthesizer", it was discovered that "as a rule of thumb", the table length should not exceed the processor cache size. A relevant excerpt of this e-mail exchange is depicted in Figure \ref{fig:jari}. Considering both pieces of advice, it was decided that a Wavetable size of 4096 ($2^{12}$), which translates to 32 KB of memory, would be suitable.
+Daniel R. Mitchell advises that the length of the table be a power of two for maximum efficiency. \citebs{86} Moreover, during an E-Mail exchange with Jari Kleimola, author of the 2005 master's thesis "Design and Implementation of a Software Sound Synthesizer", it was discovered that "as a rule of thumb", the table length should not exceed the processor cache size. A relevant excerpt of this e-mail exchange is depicted in Figure \ref{fig:jari}. Considering both pieces of advice, it was decided that a Wavetable size of 4096 ($2^{12}$), which translates to 32 KB of memory, would be suitable. \parbreak
 
-\begin{figure}
+\begin{figure}[h!]
   \includegraphics[scale=0.7]{img/jari}
   \caption{An excerpt of an E-Mail exchange with Jari Kleimola.}
   \label{fig:jari}
 \end{figure}
+
+\pagebreak
 
 One important fact to mention, also discussed by Jari Kleimola, is that because the interpolation algorithm from Table \ref{code:interp} must have access to the sample value at index $i+1$, $i$ being the current index, an additional sample must be appended to the Wavetable to avoid a \texttt{BAD\_ACCESS} error when $i$ is at the last valid position in the table. This added sample has the same value as the first sample in the table to avoid a discontinuity. Therefore, the period of the waveform actually only fills 4095 of the 4096 indices of the Wavetable, as the 4096th sample is equal to the first.
 
@@ -186,7 +180,7 @@ One important fact to mention, also discussed by Jari Kleimola, is that because 
 
 For maximum efficiency, the Wavetables are not created at program startup but read from a binary file. To prevent the synthesizer program from accidentally reading faulty files, some simple identification string must be added to the file. Therefore, Wavetable files contain a 6-byte ID string equal to the name of the synthesizer, \emph{Anthem}, after which the 32 KB of Wavetable data follow. Additionally, Wavetable files end with a \texttt{.wavetable} file extension. Table \ref{code:wtfile} displays a function to read such a Wavetable file and Figure \ref{fig:wtfile} shows the first few bytes of a Wavetable file when opened as plain-text. The total size of a Wavetable file is exactly 32774 bytes, 32768 bytes (32KB) of Wavetable data and 6 bytes for the ID string.
 
-\begin{table}[t!]
+\begin{table}[h!]
   \code{file.cpp}
   \caption{C++ code to read a Wavetable file. }
   \label{code:wtfile}
@@ -200,21 +194,21 @@ For maximum efficiency, the Wavetables are not created at program startup but re
 
 \section{Noise}
 
-A noisy signal is a signal in which some or all samples take on random values. Generally, noise is considered as something to avoid, as it may lead to unwanted distortion of a signal. Nevertheless, noise can be used as an interesting effect when creating music. Its uses include, for example, the modeling of the sound of wind or the crashing of water waves against the shore of a beach. Some people enjoy the change in texture noise induces in a sound, others find noise relaxing and even listen to it while studying. \citebs{76} Unlike all audio signals\footnote{The term "waveform" would be incorrect here, as noise is not periodic and thus cannot really be seen as a waveform.} presented so far, noise cannot\footnotemark{} be stored in a Wavetable, as it must be random throughout its duration and not repeat periodically for a proper sensation of truly \emph{random} noise. Another interesting fact about noise is that it is common to associate certain forms of noise with colors. The \emph{color} of a noise signal describes, acoustically speaking, the \emph{texture} or \emph{timbre} \footnotemark[4]{} of the sound produced, as well as, scientifically speaking, the spectral power density and frequency content of the signal. \vspace{\baselineskip}
+A noisy signal is a signal in which some or all samples take on random values. Generally, noise is considered as something to avoid, as it may lead to unwanted distortion of a signal. Nevertheless, noise can be used as an interesting effect when creating music. Its uses include, for example, the modeling of the sound of wind or the crashing of water waves against the shore of a beach. Some people enjoy the change in texture noise induces in a sound, while others find noise relaxing and even listen to it while studying. \citebs{76} Unlike all audio signals presented so far, noise cannot\footnotemark{} be stored in a Wavetable, as it must be random throughout its duration and not repeat periodically for a proper sensation of truly \emph{random} noise. Another interesting fact about noise is that it is common to associate certain forms of noise with colors. The \emph{color} of a noise signal describes, acoustically speaking, the \emph{texture} or \emph{timbre} \footnotemark[2]{} of the sound produced, as well as, scientifically speaking, the spectral power density and frequency content of the signal. \parbreak
 
-White noise is the most frequencly encountered form, or color, of noise. It is a random signal in its purest and most un-filtered form. In such a signal, all possible frequencies are found with a uniform probability distribution, meaning they are distributed at equal intensity throughout the signal. The association of noise with colors actually stems from the connection between white noise and white light, which is said to be composed of almost all color components at an approximately equal distribution. Figure \ref{fig:wnoise} shows a typical white noise signal in the time domain, Figure \ref{fig:wnoisez} gives a close-up view of Figure \ref{fig:wnoise}, Figure \ref{fig:wnoisefreq} displays the frequency spectrum of a white noise signal and Table \ref{code:wnoise} shows the implementation of a simple C++ class to produce white noise.
+White noise is the most frequently encountered form, or color, of noise. It is a random signal in its purest and most un-filtered form. In such a signal, all possible frequencies are found with a uniform probability distribution, meaning they are distributed at equal intensity throughout the signal. The association of noise with colors actually stems from the connection between white noise and white light, which is said to be composed of almost all color components at an approximately equal distribution. Figure \ref{fig:wnoise} shows a typical white noise signal in the time domain, Figure \ref{fig:wnoisez} gives a close-up view of Figure \ref{fig:wnoise}, Figure \ref{fig:wnoisefreq} displays the frequency spectrum of a white noise signal and Table \ref{code:wnoise} shows the implementation of a simple C++ class to produce white noise.
 
 \footnotetext{Noise could theoretically be stored in a Wavetable, of course. However, even a very large Wavetable destroys the randomness property to some extent and would thus invalidate the idea behind noise being truly random.}
 
-\footnotetext[4]{Timbre is a rather vague term used by musicians and audio engineers to describe the properties, such as pitch, tone and intensity, of an audio signal's sound that distinguish it from other sounds. The \emph{Oxford Dictionary of English} defines timbre as "the character or quality of a musical sound or voice as distinct from its pitch and intensity".}
+\footnotetext[2]{Timbre is a rather vague term used by musicians and audio engineers to describe the properties, such as pitch, tone or intensity, of an audio signal's sound that distinguish it from other sounds. The \emph{Oxford Dictionary of English} defines timbre as "the character or quality of a musical sound or voice as distinct from its pitch and intensity".}
 
-\begin{figure}[p!]
+\begin{figure}[h!]
 	\includegraphics[scale=0.62]{img/wnoise}
 	\caption{A typical white noise signal.}
 	\label{fig:wnoise}
 \end{figure}
 
-\begin{figure}[p!]
+\begin{figure}[h!]
 	\includegraphics[scale=0.5]{img/wnoisez}
 	\caption{A close-up view of Figure \ref{fig:wnoise}. This Figure shows nicely how individual sample values are completely random and independent from each other. }
 	\label{fig:wnoisez}
