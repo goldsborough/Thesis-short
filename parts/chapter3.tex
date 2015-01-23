@@ -12,7 +12,7 @@ A common concept associated with Envelopes is \emph{ADSR}, which stands for \emp
 
 \begin{figure}[p!]
   \includegraphics[scale=0.8]{img/adsr}
-  \caption{An Envelope with an Attack, a Decay, a Sustain and finally a Release segment. Source: \protect\url{http://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/ADSR_parameter.svg/500px-ADSR_parameter.svg.png}}
+  \caption{An Envelope with an Attack, a Decay, a Sustain and finally a Release segment. Source: \protect\url{http://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/ADSR_parameter.svg/500px-ADSR_parameter.svg.png}, accessed 23 January 2015.}
   \label{fig:adsr}
 \end{figure}
 
@@ -104,9 +104,9 @@ Concerning the implementation of an LFO in a computer program, the process could
 
 The majority of digital synthesizers, such as Propellerhead's\footnotemark{} \emph{Thor} or Native Instruments'\footnotemark[3] \emph{FM8} synthesizer, implement modulation in a static way. Instead of making it possible to use an LFO or an Envelope to modulate any parameter in a synthesis system, units, e.g. an oscillator, have dedicated LFOs and Envelopes, which modulate only one parameter --- mostly amplitude --- and only for this unit. On the other hand, some synthesizers like \emph{Massive}, also created by Native Instruments, implement a system where LFOs and Envelopes can be used by a variable number of units for a variable number of parameters. For this thesis and the synthesizer created for it, such a system, here called the \emph{ModDock} system, was emulated. The following sections will outline the process of defining and implementing the ModDock system.
 
-\footnotetext{"Propellerhead Software is a music software company, based in Stockholm, Sweden, and founded in 1994." Source: \emph{Wikipedia} \url{http://en.wikipedia.org/wiki/Propellerhead_Software} Homepage: \url{https://www.propellerheads.se}}
+\footnotetext{"Propellerhead Software is a music software company, based in Stockholm, Sweden, and founded in 1994." Source: \url{http://en.wikipedia.org/wiki/Propellerhead_Software}, accessed 23 January 2015. Homepage: \url{https://www.propellerheads.se}, accessed 23 January 2015.}
 
-\footnotetext[3]{"Native Instruments is a technology company that develops software and hardware for music production and DJ-ing", based out of Berlin, Germany. Source: \emph{Wikpedia:} \url{http://en.wikipedia.org/wiki/Native_Instruments}. Homepage: \url{http://www.native-instruments.com/en/}}
+\footnotetext[3]{"Native Instruments is a technology company that develops software and hardware for music production and DJ-ing", based out of Berlin, Germany. Source: \url{http://en.wikipedia.org/wiki/Native_Instruments}, accessed 23 January 2015.. Homepage: \url{http://www.native-instruments.com/en/}, accessed 23 January 2015.}
 
 \subsubsection{Problem Statement}
 
