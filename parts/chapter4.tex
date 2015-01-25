@@ -1,6 +1,6 @@
 \chapter{Synthesizing Sound}
 
-The most important feature of a synthesizer is its capability to synthesize sound. Synthesizing sound means to combine two or more (audio) signals to produce a new signal. The many possibilities to synthesize sound waves enable musicians to create an uncountable number of different sounds. A synthesizer can be configured to resemble natural sounds such as that of wind or water waves, can emulate other instruments like pianos, guitars or bass drums and, finally, a synthesizer can also be used to produce entirely new, electronic sounds. However, not all synthesis methods available to the creator of a digital synthesizer are equally suited to the various possible sounds just described. Common methods of synthesis are Additive Synthesis, Granular Synthesis, Amplitude Modulation Synthesis and Frequency Modulation Synthesis. This chapter aims to examine and describe the latter.
+The most important feature of a synthesizer is its ability to synthesize sound. Synthesizing sound means to combine two or more (audio) signals to produce a new signal. The many possibilities to synthesize sound waves enable musicians to create an uncountable number of different sounds. A synthesizer can be configured to resemble natural sounds such as that of wind or water waves, can emulate other instruments like pianos, guitars or bass drums and, finally, a synthesizer can also be used to produce entirely new, electronic sounds. However, not all synthesis methods available to the creator of a digital synthesizer are equally suited to the various possible sounds just described. Common methods of synthesis are Additive Synthesis, Granular Synthesis, Amplitude Modulation Synthesis and Frequency Modulation Synthesis. This chapter aims to examine and describe the latter.
 
 \subsubsection{Frequency Modulation Synthesis}
 
@@ -27,7 +27,7 @@ In Frequency Modulation (FM) Synthesis, one signal, termed the \emph{modulator},
 
 \begin{figure}
   \includegraphics[scale=0.7]{img/fmlow}
-  \caption{The first figure shows the carrier signal $c(t)$ with its frequency $f_{c}$ equal to 100 Hz. The signal beneath the carrier is that of the modulator, $m(t)$, which has a frequency $f_{m}$ of 5 Hz. When the modulator amplitude $A_{m}$ is increased to 50 (instead of \textasciitilde{} 0.4, as shown here) and is used to modulate the frequency of the carrier, this produces $f(t)$, shown in the last figure. While these figures explain how FM works, they are actually not a good example of FM Synthesis, as the modulator frequency is not in the audible range.}
+  \caption{The first figure shows the carrier signal $c(t)$ with its frequency $f_{c}$ equal to 100 Hz. The signal beneath the carrier is that of the modulator, $m(t)$, which has a frequency $f_{m}$ of 5 Hz. When the modulator amplitude $A_{m}$ is increased to 50 (instead of \textasciitilde{} 0.4, as shown here) and is used to modulate the frequency of the carrier, $f(t)$, shown in the last figure, is produced.}
   \label{fig:fmlow}
 \end{figure}
 
@@ -35,18 +35,20 @@ In Frequency Modulation (FM) Synthesis, one signal, termed the \emph{modulator},
 
 One of the most noticeable effects of FM Synthesis is that it adds \emph{sidebands} to a carrier signal's frequency spectrum. Sidebands are frequency components higher or lower than the carrier frequency, whose spectral position, amplitude as well as relative spacing depends on two factors: the ratio between the carrier and modulator frequency, referred to as the \emph{C:M ratio}, and the index of modulation $\beta$, which in turn depends on the modulator signal's amplitude and frequency.
 
+\pagebreak
+
   \subsubsection{C:M Ratio}
 
-  The spacing and positions of sidebands on the carrier signal's frequency spectrum depends on the ratio between the frequency of the carrier signal, $C$, and that of the modulator, $M$. This $C:M$ ratio gives insight into a variety of properties of a frequency-modulated sound. Most importantly, when the $C:M$ ratio is known, Equation \ref{eq:sbcm} gives all the relative frequency values of the theoretically infinite set of sidebands. Equation \ref{eq:sbabs} describes how to calculate $\omega_{sb_{n}}$, the angular frequency of the $n$-th sideband, absolutely. What these equations show is that for any given $C:M$ ratio, the sidebands are found at relative frequencies $C + M, C + 2M, C + 3M, ... $ and absolute frequencies %
+  The spacing and positions of sidebands on the carrier signal's frequency spectrum depends on the ratio between the frequency of the carrier signal, $C$, and that of the modulator, $M$. This $C:M$ ratio gives insight into a variety of properties of a frequency-modulated sound. Most importantly, when the $C:M$ ratio is known, Equation \ref{eq:sbcm} gives all the relative frequency values of the theoretically infinite set of sidebands. Equation \ref{eq:sbabs} describes how to calculate $\omega_{n}$, the angular frequency of the $n$-th sideband, absolutely. What these equations show is that for any given $C:M$ ratio, the sidebands are found at relative frequencies $C + M, C + 2M, C + 3M, ... $ and absolute frequencies %
   $\omega_{c} + \omega_{m}, \omega_{c} + 2 \omega_{m},\omega_{c} + 3 \omega_{m}, ...$ Hertz. \parbreak
 
   \begin{equation}
-    \omega_{{sb}_{n}} = C \pm n \cdot M, \text{where } n \in [0;\infty[
+    \omega_{n} = C \pm n \cdot M, \text{where } n \in [0;\infty[
     \label{eq:sbcm}
   \end{equation}
 
   \begin{equation}
-    \omega_{{sb}_{n}} = \omega_{c} \pm n \cdot \omega_{m}, \text{where } n \in [0;\infty[
+    \omega_{n} = \omega_{c} \pm n \cdot \omega_{m}, \text{where } n \in [0;\infty[
     \label{eq:sbabs}
   \end{equation}
 
@@ -139,20 +141,20 @@ The bandwidth of a signal describes the range of frequencies that signal occupie
 
   \subsubsection{Algorithms and Operators}
 
-  When speaking of FM Synthesis, it is common to refer to oscillators as \emph{operators}. This naming convention stems from the Yamaha \emph{DX-7} series. So far, FM Synthesis was only discussed for two operators, a carrier and a modulator. However, it is entirely possible to perform FM Synthesis with more than two operators, by modulating any number of operators either in series, or in parallel. When three operators $A$, $B$ and $C$ are connected in series, $A$ modulates $B$, which in turn modulates $C$. If $A$ and $B$ are connected in parallel, but in series with $C$, $C$ is first modulated by $A$ and then by $B$. The same result is achieved if the sum of signals $A$ and $B$ is used to modulate $C$. In general, a configuration of operators is referred to as an \emph{algorithm}. The number of possible algorithms increases with an increasing number of operators. In the synthesizer created for this thesis, four operators $A$, $B$, $C$ and $D$ are used. The possible algorithms for these four operators are shown in Figure \ref{fig:fmalgs}.
+  When speaking of FM Synthesis, it is common to refer to oscillators as \emph{Operators}. This naming convention stems from the Yamaha \emph{DX-7} series. So far, FM Synthesis was only discussed for two Operators, a carrier and a modulator. However, it is entirely possible to perform FM Synthesis with more than two Operators, by modulating any number of Operators either in series or in parallel. When three Operators $A$, $B$ and $C$ are connected in series, $A$ modulates $B$, which in turn modulates $C$. If $A$ and $B$ are connected in parallel, but in series with $C$, $C$ is first modulated by $A$ and then by $B$. The same result is achieved if the sum of signals $A$ and $B$ is used to modulate $C$. In general, a configuration of Operators is referred to as an \emph{FM Algorithm}. The number of possible FM Algorithms increases with an increasing number of Operators. In the synthesizer created for this thesis, four Operators --- $A$, $B$, $C$ and $D$ --- are used. The possible FM Algorithms for these four Operators are shown in Figure \ref{fig:fmalgs}.
 
   \begin{figure}[p!]
     \includegraphics[scale=0.75]{img/fmalgs}
-    \caption{Signal flows for FM Synthesis algorithms with four operators, $A$, $B$, $C$ and $D$. A direct connection between two operators means modulation of the bottom operator by the top operator. Signals of operators positioned side-by-side are summed.}
+    \caption{Signal flows for FM Synthesis FM Algorithms with four Operators, $A$, $B$, $C$ and $D$. A direct connection between two Operators means modulation of the bottom Operator by the top Operator. Signals of Operators positioned side-by-side are summed.}
     \label{fig:fmalgs}
   \end{figure}
 
   \subsubsection{Implementation}
 
-  The \texttt{Operator} class implements an FM operator and inherits from the \texttt{Oscillator} class. Its frequency is modulated by adding an offset to its Wavetable index increment, proportional to the frequency variation caused by the modulator. Table \ref{code:operator} shows how this offset is calculated and added to the Wavetable index whenever the Operator is updated. Listing \ref{code:fm} shows how the \texttt{FM} class, which takes pointers to four Operators, implements the various algorithms shown in Figure \ref{fig:fmalgs}.
+  The \texttt{Operator} class implements an FM Operator and inherits from the \texttt{Oscillator} class. Its frequency is modulated by adding an offset to its Wavetable index increment, proportional to the frequency variation caused by the modulator. Table \ref{code:Operator} shows how this offset is calculated and added to the Wavetable index whenever the Operator is updated. Listing \ref{code:fm} shows how the \texttt{FM} class, which takes pointers to four Operators, implements the various FM Algorithms shown in Figure \ref{fig:fmalgs}.
 
   \begin{table}[hb!]
-    \code{operator.cpp}
+    \code{Operator.cpp}
     \caption{Two member functions from the \texttt{Operator} class that show how the frequency of an \texttt{Operator} object can be modulated.}
-    \label{code:operator}
+    \label{code:Operator}
   \end{table}
