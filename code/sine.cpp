@@ -9,8 +9,6 @@ int main(int argc, char * argv[])
   const unsigned long duration = 1;
 
   // The number of samples that will be generated, derived
-  // from the number of samples per second (the sample rate)
-  // and the number of seconds to be generated for.
   const unsigned long numberOfSamples = duration * samplerate;
 
   const double pi = 3.141592653589793;
@@ -23,11 +21,10 @@ int main(int argc, char * argv[])
   // The phase counter. This variable can be seen as phi.
   double phase = 0;
 
-  // The amount by which the phase is incremented for each
-  // sample. Since one period of a sine wave has 2 pi radians,
-  // dividing that value by the sample rate yields the amount
-  // of radians by which the phase needs to be incremented to
-  // reach a full 2 pi radians.
+  // The amount by which the phase is incremented for each sample. Since
+  // one period of a sine wave has 2 pi radians, dividing that value by
+  // the sample rate yields the amount of radians by which the phase
+  // needs to be incremented to reach a full 2 pi radians.
   double phaseIncrement = frequency * twoPi / samplerate;
 
   // The maximum amplitude of the signal, should not exceed 1.
@@ -49,13 +46,9 @@ int main(int argc, char * argv[])
       // Check if two pi have been reached and
       // reset if so.
       if (phase >= twoPi)
-      {
-          phase -= twoPi;
-      }
+      { phase -= twoPi; }
   }
 
-  // Further processing ...
-
-  // Free the buffer memory.
+  // Free the buffer memory
   delete [] buffer;
 }

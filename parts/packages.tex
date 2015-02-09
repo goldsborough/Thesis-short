@@ -30,12 +30,13 @@
 
 \usepackage{array}
 
-\usepackage[toc,page]{appendix}
+\usepackage[titletoc]{appendix}
 
 \usepackage{colortbl}
 
 \usepackage{hyperref}
 
+% Get rid of first page (weird bug)
 \usepackage{atbegshi}% http://ctan.org/pkg/atbegshi
 \AtBeginDocument{\AtBeginShipoutNext{\AtBeginShipoutDiscard}}
 
